@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yape Clave</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #6a0dad;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .top-bar {
+      width: 100%;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .help-btn {
+      background-color: #8643d0;
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 14px;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .help-btn i {
+      margin-right: 6px;
+    }
+
+    .qr-section img {
+      width: 200px;
+      border-radius: 16px;
+      margin-top: 10px;
+    }
+
+    .form-section {
+      background-color: white;
+      color: #6a0dad;
+      width: 100%;
+      border-radius: 0;
+      padding: 30px 0 40px;
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .title {
+      font-size: 20px;
+      margin-bottom: 20px;
+      transition: opacity 0.3s ease;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #6a0dad;
+      visibility: hidden;
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .keypad button {
+      font-size: 20px;
+      background-color: #f2f2f2;
+      border: none;
+      padding: 15px 0;
+      border-radius: 12px;
+      color: #3d3d3d;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .keypad button:active {
+      transform: scale(0.92);
+    }
+
+    .forgot a {
+      color: #00cfcf;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      color: #6a0dad;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .loader {
+      border: 5px solid #eee;
+      border-top: 5px solid #6a0dad;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <a class="help-btn" href="https://tuayuda.com" target="_blank">
+      <i class="fas fa-headset"></i>Ayuda
+    </a>
+  </div>
+
+  <div class="qr-section">
+    <img src="https://i.ibb.co/ZLbRfFG/yape-qr-demo.png" alt="QR Yape">
+  </div>
+
+  <div class="form-section">
+    <div class="title" id="clave-title">Ingresa tu clave</div>
+    <input type="password" id="clave" maxlength="6" style="display:none;" />
+    <div class="dots" id="dots-container">
+      <div class="dot" id="dot1"></div>
+      <div class="dot" id="dot2"></div>
+      <div class="dot" id="dot3"></div>
+      <div class="dot" id="dot4"></div>
+      <div class="dot" id="dot5"></div>
+      <div class="dot" id="dot6"></div>
+    </div>
+
+    <div class="keypad" id="keypad"></div>
+
+    <div class="forgot">
+      <a href="https://tucambioclave.com" target="_blank">OLVIDO O CAMBIO DE CLAVE</a>
+    </div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modal-content">
+      <div class="loader"></div>
+      Verificando...
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById("clave");
+    const title = document.getElementById("clave-title");
+    const dots = document.getElementById("dots-container");
+    const modal = document.getElementById("modal");
+    const modalContent = document.getElementById("modal-content");
+    const keypad = document.getElementById("keypad");
+
+    function updateDots() {
+      const length = input.value.length;
+      for (let i = 1; i <= 6; i++) {
+        document.getElementById("dot" + i).style.visibility = i <= length ? "visible" : "hidden";
+      }
+    }
+
+    function addNumber(num) {
+      if (input.value.length < 6) {
+        input.value += num;
+        title.style.opacity = 0;
+        updateDots();
+        if (input.value.length === 6) {
+          showLoadingModal();
+        }
+      }
+    }
+
+    function deleteNumber() {
+      input.value = input.value.slice(0, -1);
+      if (input.value.length === 0) {
+        title.style.opacity = 1;
+      }
+      updateDots();
+      generateKeypad();
+    }
+
+    function showLoadingModal() {
+      modal.style.display = "flex";
+      setTimeout(() => {
+        if (input.value === "111111") {
+          window.location.href = "https://tupagina.com";
+        } else {
+          modalContent.innerHTML = "❌ Contraseña incorrecta";
+          setTimeout(() => {
+            modal.style.display = "none";
+            modalContent.innerHTML = '<div class="loader"></div>Verificando...';
+            input.value = "";
+            updateDots();
+            title.style.opacity = 1;
+            generateKeypad();
+          }, 1500);
+        }
+      }, 2000);
+    }
+
+    async function authenticateWithFingerprint() {
+      if (!window.PublicKeyCredential) {
+        alert("Tu navegador no soporta autenticación biométrica");
+        return;
+      }
+      try {
+        await navigator.credentials.get({
+          publicKey: {
+            challenge: new Uint8Array([1,2,3,4]),
+            allowCredentials: [],
+            timeout: 60000,
+            userVerification: "preferred"
+          }
+        });
+        // Si fue exitoso
+        showLoadingModal();
+        input.value = "111111"; // Marca como válida
+      } catch (e) {
+        alert("Autenticación biométrica cancelada o fallida");
+      }
+    }
+
+    function generateKeypad() {
+      keypad.innerHTML = "";
+      const numbers = [0,1,2,3,4,5,6,7,8,9];
+      const shuffled = numbers.sort(() => Math.random() - 0.5);
+
+      for (let i = 0; i < 9; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = shuffled[i];
+        btn.onclick = () => addNumber(shuffled[i]);
+        keypad.appendChild(btn);
+      }
+
+      const fingerprint = document.createElement("button");
+      fingerprint.innerHTML = '<i class="fas fa-fingerprint fingerprint"></i>';
+      fingerprint.onclick = authenticateWithFingerprint;
+      keypad.appendChild(fingerprint);
+
+      const btn0 = document.createElement("button");
+      btn0.textContent = shuffled[9];
+      btn0.onclick = () => addNumber(shuffled[9]);
+      keypad.appendChild(btn0);
+
+      const del = document.createElement("button");
+      del.innerHTML = '<i class="fas fa-delete-left"></i>';
+      del.onclick = deleteNumber;
+      keypad.appendChild(del);
+    }
+
+    generateKeypad();
+  </script>
+</body>
+</html>
