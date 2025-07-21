@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro Yape</title>  <!-- Firebase -->  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #6a0dad;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .container {
+      background-color: white;
+      color: #6a0dad;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #6a0dad;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    p {
+      font-size: 15px;
+    }
+  </style></head>
+<body>
+  <div class="container">
+    <h2>Antes de continuar</h2>
+    <p>Regístrate con tu nombre de usuario, correo electrónico y una clave de 6 dígitos numéricos.</p>
+    <input type="text" id="username" placeholder="Nombre de usuario" required />
+    <input type="email" id="email" placeholder="Correo electrónico" required />
+    <input type="password" id="clave" placeholder="Clave (6 dígitos)" pattern="\d{6}" maxlength="6" required />
+    <button onclick="registerUser()">Registrarse</button>
+  </div>  <script>
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "TU_AUTH_DOMAIN",
+      databaseURL: "TU_DB_URL",
+      projectId: "TU_PROJECT_ID",
+      storageBucket: "TU_STORAGE_BUCKET",
+      messagingSenderId: "TU_SENDER_ID",
+      appId: "TU_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    function registerUser() {
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const clave = document.getElementById('clave').value.trim();
+
+      if (username === '' || email === '' || !/^\d{6}$/.test(clave)) {
+        alert('Por favor, completa todos los campos correctamente.');
+        return;
+      }
+
+      firebase.auth().createUserWithEmailAndPassword(email, clave)
+        .then(userCredential => {
+          const userId = userCredential.user.uid;
+
+          return firebase.database().ref('usuarios/' + userId).set({
+            usuario: username,
+            correo: email,
+            clave: clave
+          });
+        })
+        .then(() => {
+          localStorage.setItem('usuario', username);
+          alert('✅ Registro exitoso. Redirigiendo...');
+          window.location.href = 'login.html';
+        })
+        .catch(error => {
+          alert('Error: ' + error.message);
+        });
+    }
+  </script></body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yape UI Final</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --morado: #720e9e;
+      --verde: #00c6a2;
+    }
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: var(--morado);
+      color: white;
+    }
+
+    .header {
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .username a {
+      text-decoration: none;
+      color: white;
+      font-size: 1.1rem;
+    }
+
+    .username a i {
+      margin-right: 0.5rem;
+      color: white;
+    }
+
+    .gratis-label {
+      background:#ffd700;
+      color:black;
+      border-radius:5px;
+      padding:2px 5px;
+      font-size:0.7rem;
+      margin-left: 0.5rem;
+    }
+
+    .icons {
+      display: flex;
+      gap: 1rem;
+      font-size: 1.2rem;
+    }
+
+    .icons i {
+      color: white;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .icon-btn {
+      background-color: white;
+      color: #000;
+      border-radius: 15px;
+      padding: 1rem 0.5rem;
+      text-align: center;
+      font-size: 0.75rem;
+    }
+
+    .icon-btn i {
+      font-size: 1.5rem;
+      margin-bottom: 0.3rem;
+      display: block;
+      color: var(--morado);
+    }
+
+    .carousel {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    .slides {
+      display: flex;
+      width: 300%;
+      transition: transform 1.2s ease-in-out;
+      margin: 0;
+      padding: 0;
+    }
+
+    .slide {
+      flex: 1 0 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+
+    .slide img {
+      width: 90%;
+      max-width: 750px;
+      height: auto;
+      max-height: 180px;
+      border-radius: 20px;
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+
+    .dots {
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin: 0 5px;
+      background-color: #ccc;
+      border-radius: 50%;
+      transition: background-color 0.3s;
+    }
+
+    .dot.active {
+      background-color: var(--morado);
+      width: 12px;
+      height: 12px;
+    }
+
+    .actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem;
+  margin-bottom: 110px; /* espacio para evitar que lo tape el footer */
+}
+
+    .card {
+      background: white;
+      color: var(--morado);
+      border-radius: 20px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+
+    .card i {
+      margin-right: 0.5rem;
+      font-size: 1.2rem;
+      color: var(--morado);
+    }
+
+    .dropdown-content {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #f7f7f7;
+      border-radius: 10px;
+      color: black;
+      display: none;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: white;
+      display: flex;
+      justify-content: space-evenly;
+      padding: 1rem 0;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    }
+
+    .footer a, .footer button {
+      background-color: white;
+      color: var(--verde);
+      border: 2px solid var(--verde);
+      padding: 0.9rem 1.8rem;
+      border-radius: 15px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer i {
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Encabezado -->
+  <div class="header">
+    <div class="username">
+   <a href="perfil"><i class="fas fa-user"></i> Hola, <span id="nombre-usuario"></span></a>
+      <span class="gratis-label">Gratis</span>
+    </div>
+    <div class="icons">
+      <i class="fas fa-headset"></i>
+      <i class="fas fa-bell"></i>
+    </div>
+  </div>
+
+  <!-- Menú -->
+  <div class="grid">
+    <div class="icon-btn"><i class="fas fa-mobile-alt"></i>Recargar<br>celular</div>
+    <div class="icon-btn"><i class="fas fa-lightbulb"></i>Yapear<br>servicios</div>
+    <div class="icon-btn"><i class="fas fa-tags"></i>Promos</div>
+    <div class="icon-btn"><i class="fas fa-check-circle"></i>Aprobar<br>compras</div>
+    <div class="icon-btn"><i class="fas fa-hand-holding-usd"></i>Créditos</div>
+    <div class="icon-btn"><i class="fas fa-store"></i>Tienda <span style="color:red;font-weight:bold;">¡Cyber!</span></div>
+    <div class="icon-btn"><i class="fas fa-dollar-sign"></i>Dólares</div>
+    <div class="icon-btn"><i class="fas fa-globe"></i>Remesas</div>
+    <div class="icon-btn"><i class="fas fa-car-crash"></i>SOAT</div>
+    <div class="icon-btn"><i class="fas fa-bus"></i>Viajar en<br>bus</div>
+    <div class="icon-btn"><i class="fas fa-gamepad"></i>Gaming</div>
+    <div class="icon-btn"><i class="fas fa-plus-circle"></i>Ver todo</div>
+  </div>
+
+  <!-- Carrusel de banners -->
+  <div class="carousel">
+    <div class="slides" id="slide-container">
+      <div class="slide"><img src="imagen/1.jpg" alt="Banner 1"></div>
+      <div class="slide"><img src="imagen/2.jpg" alt="Banner 2"></div>
+      <div class="slide"><img src="imagen/3.jpg" alt="Banner 3"></div>
+      <div class="slide"><img src="imagen/4.jpg" alt="Banner 4"></div>
+      <div class="slide"><img src="imagen/5.jpg" alt="Banner 5"></div>
+    </div>
+  </div>
+
+  <!-- Puntitos de navegación -->
+  <div class="dots">
+    <span class="dot active"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+  </div>
+
+  <!-- Acciones separadas -->
+  <div class="actions">
+    <div class="card" onclick="mostrarSaldo()">
+      <span><i class="fas fa-eye"></i>Mostrar saldo</span>
+      <span id="saldo-valor" style="font-weight:bold;"></span>
+    </div>
+
+    <div class="card" onclick="toggleDropdown()">
+      <span><i class="fas fa-eye"></i>Mostrar movimientos</span>
+      <i class="fas fa-chevron-down"></i>
+    </div>
+    <div class="dropdown-content" id="dropdown">
+      <p>• Pago a Juan - S/50<br>• Recarga Movistar - S/10<br>• Transferencia recibida - S/100</p>
+    </div>
+  </div>
+
+  <!-- Botones -->
+  <div class="footer">
+    <button><i class="fas fa-qrcode"></i> ESCANEAR QR</button>
+    <a href="https://ejemplo.com/yapear" target="_blank"><i class="fas fa-paper-plane"></i> YAPEAR</a>
+  </div>
+
+  <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
+<script>
+  // Tu configuración real de Firebase (¡reemplázala con tus datos!)
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_AUTH_DOMAIN",
+    databaseURL: "TU_DB_URL",
+    projectId: "TU_PROJECT_ID",
+    storageBucket: "TU_STORAGE_BUCKET",
+    messagingSenderId: "TU_SENDER_ID",
+    appId: "TU_APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  // Verificar si el usuario tiene sesión
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) {
+      // Si NO ha iniciado sesión, redirigir al login
+      window.location.href = "login";
+    }
+  });
+  
+    let currentSlide = 0;
+    const slideContainer = document.getElementById("slide-container");
+    const totalSlides = slideContainer.children.length;
+    const dots = document.querySelectorAll(".dot");
+
+    setInterval(() => {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      slideContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+      dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === currentSlide);
+      });
+    }, 5000);
+
+    function toggleDropdown() {
+      const dropdown = document.getElementById("dropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    function mostrarSaldo() {
+      const saldo = document.getElementById("saldo-valor");
+      saldo.innerText = saldo.innerText === "" ? "S/ 99.99" : "";
+    }
+    const nombreGuardado = localStorage.getItem('usuario');
+  if (nombreGuardado) {
+    document.getElementById('nombre-usuario').textContent = nombreGuardado;
+  }
+  </script>
+
+</body>
+</html>
