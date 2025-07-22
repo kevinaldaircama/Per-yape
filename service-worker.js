@@ -3,8 +3,8 @@ const urlsToCache = [
   '/',
   '/index.html',
   '/perfil.html',
-  '/app_icon_xxxhdpi.png',
-  '/splash_icon_xxxhdpi.png'
+  '/imagen/app_icon_xxxhdpi.png',
+  '/imagen/splash_icon_xxxhdpi.png'
   '/inicio.html'
   '/home.html'
   '/registro.html'
