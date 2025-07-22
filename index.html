@@ -1,58 +1,64 @@
-
-
-<!-- INICIO DE SESIÓN CON FIREBASE (login.html) --><!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Iniciar Sesión</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#720e9e" />
-  <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f2f2f2;
-      text-align: center;
-      padding: 30px;
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      padding: 20px;
     }
-    form {
-      background: #fff;
-      padding: 30px;
+    .container {
+      max-width: 400px;
+      background: white;
+      padding: 20px;
+      margin: auto;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      max-width: 400px;
-      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #6a0dad;
     }
     input {
-      width: 90%;
-      padding: 12px;
+      width: 100%;
+      padding: 10px;
       margin: 10px 0;
+      border-radius: 5px;
       border: 1px solid #ccc;
-      border-radius: 6px;
     }
     button {
+      width: 100%;
+      padding: 10px;
       background-color: #6a0dad;
-      color: white;
-      padding: 12px 24px;
+      color: #fff;
       border: none;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
-      margin-top: 10px;
+      font-weight: bold;
     }
-    button:hover {
-      background-color: #8643d0;
+    .message {
+      text-align: center;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
-  <h2>Iniciar Sesión</h2>
-  <form id="loginForm">
-    <input type="text" id="userInput" placeholder="Correo o nombre de usuario" required />
-    <input type="password" id="password" placeholder="Contraseña" required />
-    <button type="submit">Ingresar</button>
-  </form>  <script>
+  <div class="container">
+    <h2>Iniciar Sesión</h2>
+    <input type="email" id="correo" placeholder="Correo electrónico" required>
+    <input type="password" id="clave" placeholder="Contraseña" required>
+    <button onclick="iniciarSesion()">Ingresar</button>
+    <div class="message" id="mensaje"></div>
+  </div>
+
+  <script>
+    // Configura tu Firebase aquí
     const firebaseConfig = {
       apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
     authDomain: "yape-7c2d8.firebaseapp.com",
@@ -66,24 +72,32 @@
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    const form = document.getElementById("loginForm");
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const userInput = document.getElementById("userInput").value;
-      const password = document.getElementById("password").value;
+    async function iniciarSesion() {
+      const correo = document.getElementById('correo').value;
+      const clave = document.getElementById('clave').value;
+      const mensaje = document.getElementById('mensaje');
 
-      const storedEmail = localStorage.getItem("emailUsuario") || userInput;
-      const storedName = localStorage.getItem("nombreUsuario") || userInput;
+      mensaje.innerText = "Verificando...";
 
-      auth.signInWithEmailAndPassword(storedEmail, password)
-        .then(userCredential => {
-          localStorage.setItem("nombreUsuario", storedName);
-          window.location.href = "inicio.html";
-        })
-        .catch(error => {
-          alert("Error: " + error.message);
-        });
-    });
-  </script></body>
-</html
+      try {
+        const credenciales = await auth.signInWithEmailAndPassword(correo, clave);
+        const uid = credenciales.user.uid;
+        const doc = await db.collection("usuarios").doc(uid).get();
+
+        if (doc.exists) {
+          const usuario = doc.data();
+          localStorage.setItem("nombreUsuario", usuario.nombre);
+          localStorage.setItem("saldoUsuario", usuario.monto);
+          window.location.href = "yape.html";
+        } else {
+          mensaje.innerText = "Usuario no encontrado en Firestore.";
+        }
+      } catch (error) {
+        mensaje.innerText = `Error: ${error.message}`;
+      }
+    }
+  </script>
+</body>
+</html>
