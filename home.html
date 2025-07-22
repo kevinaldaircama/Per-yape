@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Yape UI Final</title>
+  <title>Yape Home</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     :root {
@@ -137,7 +137,7 @@
       height: 12px;
     }
 
-    .actions {
+.actions {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -207,10 +207,10 @@
 
   <!-- Encabezado -->
   <div class="header">
-    <div class="username">
-   <a href="perfil"><i class="fas fa-user"></i> Hola, <span id="nombre-usuario"></span></a>
-      <span class="gratis-label">Gratis</span>
-    </div>
+<div class="username">
+  <a href="perfil.html" id="userLink"><i class="fas fa-user"></i> Hola, Usuario</a>
+  <span class="gratis-label">Gratis</span>
+</div>
     <div class="icons">
       <i class="fas fa-headset"></i>
       <i class="fas fa-bell"></i>
@@ -276,34 +276,8 @@
     <a href="https://ejemplo.com/yapear" target="_blank"><i class="fas fa-paper-plane"></i> YAPEAR</a>
   </div>
 
-  <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
-
-<script>
-  // Tu configuración real de Firebase (¡reemplázala con tus datos!)
-  const firebaseConfig = {
-    apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
-    authDomain: "yape-7c2d8.firebaseapp.com",
-    databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
-    projectId: "yape-7c2d8",
-    storageBucket: "yape-7c2d8.firebasestorage.app",
-    messagingSenderId: "906697506917",
-    appId: "1:906697506917:web:39812c83dd9d4b1987468c",
-    measurementId: "G-F4G428F4GZ"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-
-  // Verificar si el usuario tiene sesión
-  firebase.auth().onAuthStateChanged(user => {
-    if (!user) {
-      // Si NO ha iniciado sesión, redirigir al login
-      window.location.href = "login";
-    }
-  });
-  
+  <!-- Scripts -->
+  <script>
     let currentSlide = 0;
     const slideContainer = document.getElementById("slide-container");
     const totalSlides = slideContainer.children.length;
@@ -322,14 +296,17 @@
       dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     }
 
-    function mostrarSaldo() {
-      const saldo = document.getElementById("saldo-valor");
-      saldo.innerText = saldo.innerText === "" ? "S/ 99.99" : "";
-    }
-    const nombreGuardado = localStorage.getItem('usuario');
-  if (nombreGuardado) {
-    document.getElementById('nombre-usuario').textContent = nombreGuardado;
+  function mostrarSaldo() {
+    const saldo = document.getElementById("saldo-valor");
+    const monto = localStorage.getItem("saldoUsuario") || "0.00";
+    saldo.innerText = saldo.innerText === "" ? `S/ ${monto}` : "";
   }
+
+// Mostrar nombre de usuario dinámico desde localStorage
+  const userLink = document.getElementById("userLink");
+  const nombre = localStorage.getItem("nombreUsuario") || "Usuario";
+
+  userLink.innerHTML = `<i class="fas fa-user"></i> Hola, ${nombre}`;
   </script>
 
 </body>

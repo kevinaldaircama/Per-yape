@@ -1,102 +1,109 @@
 <!DOCTYPE html><html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Registro Yape</title>  <!-- Firebase -->  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>  <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#720e9e" />
+  <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png">
+  <style>
     body {
-      margin: 0;
-      font-family: 'Arial', sans-serif;
-      background-color: #6a0dad;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      padding: 20px;
     }
-
     .container {
-      background-color: white;
-      color: #6a0dad;
-      padding: 30px;
-      border-radius: 12px;
-      width: 90%;
       max-width: 400px;
+      background: #fff;
+      padding: 20px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
+    h2 {
+      text-align: center;
+      color: #6a0dad;
+    }
     input {
-      display: block;
       width: 100%;
       padding: 10px;
       margin: 10px 0;
-      border-radius: 8px;
+      border-radius: 5px;
       border: 1px solid #ccc;
     }
-
     button {
+      width: 100%;
+      padding: 10px;
       background-color: #6a0dad;
-      color: white;
-      padding: 10px 20px;
+      color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 5px;
       cursor: pointer;
+      font-weight: bold;
     }
-
-    p {
-      font-size: 15px;
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
     }
-  </style></head>
+    .modal-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
 <body>
   <div class="container">
-    <h2>Antes de continuar</h2>
-    <p>Regístrate con tu nombre de usuario, correo electrónico y una clave de 6 dígitos numéricos.</p>
-    <input type="text" id="username" placeholder="Nombre de usuario" required />
-    <input type="email" id="email" placeholder="Correo electrónico" required />
-    <input type="password" id="clave" placeholder="Clave (6 dígitos)" pattern="\d{6}" maxlength="6" required />
-    <button onclick="registerUser()">Registrarse</button>
+    <h2>Registro de Usuario</h2>
+    <p>Para continuar, regístrate:</p>
+    <input type="text" id="usuario" placeholder="Nombre de usuario" required>
+    <input type="email" id="correo" placeholder="Correo electrónico" required>
+    <input type="password" id="clave" placeholder="Contraseña" required>
+    <input type="number" id="monto" placeholder="Monto inicial" required>
+    <input type="password" id="pin" placeholder="PIN de 6 dígitos" maxlength="6" required>
+    <button onclick="registrarUsuario()">Registrarse</button>
+  </div>  <div class="modal" id="modal">
+    <div class="modal-content" id="modal-content">
+      Registrando, espere un momento...
+    </div>
   </div>  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
-    authDomain: "yape-7c2d8.firebaseapp.com",
-    databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
-    projectId: "yape-7c2d8",
-    storageBucket: "yape-7c2d8.firebasestorage.app",
-    messagingSenderId: "906697506917",
-    appId: "1:906697506917:web:39812c83dd9d4b1987468c",
-    measurementId: "G-F4G428F4GZ"
-  };
+    function registrarUsuario() {
+      const usuario = document.getElementById('usuario').value;
+      const correo = document.getElementById('correo').value;
+      const clave = document.getElementById('clave').value;
+      const monto = document.getElementById('monto').value;
+      const pin = document.getElementById('pin').value;
 
-    firebase.initializeApp(firebaseConfig);
-
-    function registerUser() {
-      const username = document.getElementById('username').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const clave = document.getElementById('clave').value.trim();
-
-      if (username === '' || email === '' || !/^\d{6}$/.test(clave)) {
-        alert('Por favor, completa todos los campos correctamente.');
+      if (!usuario || !correo || !clave || !monto || !pin || pin.length !== 6) {
+        alert("Por favor, completa todos los campos correctamente.");
         return;
       }
 
-      firebase.auth().createUserWithEmailAndPassword(email, clave)
-        .then(userCredential => {
-          const userId = userCredential.user.uid;
+      // Guardar datos en localStorage
+      localStorage.setItem("nombreUsuario", usuario);
+      localStorage.setItem("correoUsuario", correo);
+      localStorage.setItem("claveUsuario", clave);
+      localStorage.setItem("saldoUsuario", monto);
+      localStorage.setItem("pinUsuario", pin);
 
-          return firebase.database().ref('usuarios/' + userId).set({
-            usuario: username,
-            correo: email,
-            clave: clave
-          });
-        })
-        .then(() => {
-          localStorage.setItem('usuario', username);
-          alert('✅ Registro exitoso. Redirigiendo...');
-          window.location.href = 'login.html';
-        })
-        .catch(error => {
-          alert('Error: ' + error.message);
-        });
+      const modal = document.getElementById("modal");
+      const modalContent = document.getElementById("modal-content");
+      modal.style.display = "flex";
+
+      setTimeout(() => {
+        modalContent.innerText = "🎉 ¡Felicidades! Tu cuenta fue creada con éxito.";
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 2000);
+      }, 2000);
     }
   </script></body>
 </html>
