@@ -7,146 +7,167 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/> 
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#720e9e" />
-  <link rel="icon" type="image/png" href="/imagen/app_icon_xxxhdpi.png"> 
-  <style>  
-    body {  
-      margin: 0;  
-      font-family: 'Arial', sans-serif;  
-      background-color: #720e9e;  
-      color: white;  
-      display: flex;  
-      flex-direction: column;  
-      align-items: center;  
-    }  
+  <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png"> 
 
-    .top-bar {  
-      width: 100%;  
-      padding: 10px 20px;  
-      display: flex;  
-      justify-content: flex-end;  
-    }  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
 
-    .help-btn {  
-      background-color: #8643d0;  
-      border-radius: 20px;  
-      padding: 5px 12px;  
-      font-size: 14px;  
-      color: white;  
-      text-decoration: none;  
-      display: flex;  
-      align-items: center;  
-    }  
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
+    authDomain: "yape-7c2d8.firebaseapp.com",
+    databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
+    projectId: "yape-7c2d8",
+    storageBucket: "yape-7c2d8.firebasestorage.app",
+    messagingSenderId: "906697506917",
+    appId: "1:906697506917:web:39812c83dd9d4b1987468c",
+    measurementId: "G-F4G428F4GZ"
+  };
 
-    .help-btn i {  
-      margin-right: 6px;  
-    }  
 
-    .qr-section img {  
-      width: 200px;  
-      border-radius: 16px;  
-      margin-top: 10px;  
-    }  
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
 
-    .form-section {  
-      background-color: white;  
-      color: #6a0dad;  
-      width: 100%;  
-      border-radius: 0;  
-      padding: 30px 0 40px;  
-      margin-top: 30px;  
-      text-align: center;  
-    }  
+  <style>    
+    body {    
+      margin: 0;    
+      font-family: 'Arial', sans-serif;    
+      background-color: #720e9e;    
+      color: white;    
+      display: flex;    
+      flex-direction: column;    
+      align-items: center;    
+    }    .top-bar {    
+  width: 100%;    
+  padding: 10px 20px;    
+  display: flex;    
+  justify-content: flex-end;    
+}    
 
-    .title {  
-      font-size: 20px;  
-      margin-bottom: 20px;  
-      transition: opacity 0.3s ease;  
-    }  
+.help-btn {    
+  background-color: #8643d0;    
+  border-radius: 20px;    
+  padding: 5px 12px;    
+  font-size: 14px;    
+  color: white;    
+  text-decoration: none;    
+  display: flex;    
+  align-items: center;    
+}    
 
-    .dots {  
-      display: flex;  
-      justify-content: center;  
-      margin-bottom: 20px;  
-      gap: 10px;  
-    }  
+.help-btn i {    
+  margin-right: 6px;    
+}    
 
-    .dot {  
-      width: 12px;  
-      height: 12px;  
-      border-radius: 50%;  
-      background-color: #6a0dad;  
-      visibility: hidden;  
-    }  
+.qr-section img {    
+  width: 200px;    
+  border-radius: 16px;    
+  margin-top: 10px;    
+}    
 
-    .keypad {  
-      display: grid;  
-      grid-template-columns: repeat(3, 80px);  
-      gap: 12px;  
-      justify-content: center;  
-    }  
+.form-section {    
+  background-color: white;    
+  color: #6a0dad;    
+  width: 100%;    
+  border-radius: 0;    
+  padding: 30px 0 40px;    
+  margin-top: 30px;    
+  text-align: center;    
+}    
 
-    .keypad button {  
-      font-size: 20px;  
-      background-color: #f2f2f2;  
-      border: none;  
-      padding: 15px 0;  
-      border-radius: 12px;  
-      color: #3d3d3d;  
-      cursor: pointer;  
-      transition: transform 0.1s;  
-    }  
+.title {    
+  font-size: 20px;    
+  margin-bottom: 20px;    
+  transition: opacity 0.3s ease;    
+}    
 
-    .keypad button:active {  
-      transform: scale(0.92);  
-    }  
+.dots {    
+  display: flex;    
+  justify-content: center;    
+  margin-bottom: 20px;    
+  gap: 10px;    
+}    
 
-    .forgot a {  
-      color: #00cfcf;  
-      font-weight: bold;  
-      text-decoration: none;  
-      display: inline-block;  
-      margin-top: 20px;  
-      font-size: 14px;  
-    }  
+.dot {    
+  width: 12px;    
+  height: 12px;    
+  border-radius: 50%;    
+  background-color: #6a0dad;    
+  visibility: hidden;    
+}    
 
-    .modal {  
-      position: fixed;  
-      top: 0;  
-      left: 0;  
-      width: 100%;  
-      height: 100%;  
-      background: rgba(0, 0, 0, 0.6);  
-      display: none;  
-      justify-content: center;  
-      align-items: center;  
-      z-index: 999;  
-    }  
+.keypad {    
+  display: grid;    
+  grid-template-columns: repeat(3, 80px);    
+  gap: 12px;    
+  justify-content: center;    
+}    
 
-    .modal-content {  
-      background: white;  
-      padding: 30px;  
-      border-radius: 12px;  
-      text-align: center;  
-      color: #6a0dad;  
-      font-weight: bold;  
-      font-size: 16px;  
-    }  
+.keypad button {    
+  font-size: 20px;    
+  background-color: #f2f2f2;    
+  border: none;    
+  padding: 15px 0;    
+  border-radius: 12px;    
+  color: #3d3d3d;    
+  cursor: pointer;    
+  transition: transform 0.1s;    
+}    
 
-    .loader {  
-      border: 5px solid #eee;  
-      border-top: 5px solid #6a0dad;  
-      border-radius: 50%;  
-      width: 40px;  
-      height: 40px;  
-      animation: spin 1s linear infinite;  
-      margin: 0 auto 10px;  
-    }  
+.keypad button:active {    
+  transform: scale(0.92);    
+}    
 
-    @keyframes spin {  
-      0% { transform: rotate(0deg); }  
-      100% { transform: rotate(360deg); }  
-    }  
-  </style>  
+.forgot a {    
+  color: #00cfcf;    
+  font-weight: bold;    
+  text-decoration: none;    
+  display: inline-block;    
+  margin-top: 20px;    
+  font-size: 14px;    
+}    
+
+.modal {    
+  position: fixed;    
+  top: 0;    
+  left: 0;    
+  width: 100%;    
+  height: 100%;    
+  background: rgba(0, 0, 0, 0.6);    
+  display: none;    
+  justify-content: center;    
+  align-items: center;    
+  z-index: 999;    
+}    
+
+.modal-content {    
+  background: white;    
+  padding: 30px;    
+  border-radius: 12px;    
+  text-align: center;    
+  color: #6a0dad;    
+  font-weight: bold;    
+  font-size: 16px;    
+}    
+
+.loader {    
+  border: 5px solid #eee;    
+  border-top: 5px solid #6a0dad;    
+  border-radius: 50%;    
+  width: 40px;    
+  height: 40px;    
+  animation: spin 1s linear infinite;    
+  margin: 0 auto 10px;    
+}    
+
+@keyframes spin {    
+  0% { transform: rotate(0deg); }    
+  100% { transform: rotate(360deg); }    
+}
+
+  </style>    
 </head>  
 <body>  
   <div class="top-bar">  
@@ -185,20 +206,20 @@
     </div>  
   </div>  
 
-  <script>  
+  <script>
     const input = document.getElementById("clave");  
     const title = document.getElementById("clave-title");  
     const dots = document.getElementById("dots-container");  
     const modal = document.getElementById("modal");  
     const modalContent = document.getElementById("modal-content");  
-    const keypad = document.getElementById("keypad");  
+    const keypad = document.getElementById("keypad");
 
     function updateDots() {  
       const length = input.value.length;  
       for (let i = 1; i <= 6; i++) {  
         document.getElementById("dot" + i).style.visibility = i <= length ? "visible" : "hidden";  
       }  
-    }  
+    }
 
     function addNumber(num) {  
       if (input.value.length < 6) {  
@@ -209,7 +230,7 @@
           showLoadingModal();  
         }  
       }  
-    }  
+    }
 
     function deleteNumber() {  
       input.value = input.value.slice(0, -1);  
@@ -218,79 +239,92 @@
       }  
       updateDots();  
       generateKeypad();  
-    }  
+    }
 
-    function showLoadingModal() {  
-      modal.style.display = "flex";  
-      const pinGuardado = localStorage.getItem("pinUsuario") || "111111";
-      setTimeout(() => {  
-        if (input.value === pinGuardado) {  
-          window.location.href = "home.html";  
-        } else {  
-          modalContent.innerHTML = "❌ Contraseña incorrecta";  
-          setTimeout(() => {  
-            modal.style.display = "none";  
-            modalContent.innerHTML = '<div class="loader"></div>Verificando...';  
-            input.value = "";  
-            updateDots();  
-            title.style.opacity = 1;  
-            generateKeypad();  
-          }, 1500);  
-        }  
-      }, 2000);  
-    }  
+    function showLoadingModal() {
+      modal.style.display = "flex";
+      const pinIngresado = input.value;
 
-    async function authenticateWithFingerprint() {  
-      if (!window.PublicKeyCredential) {  
-        alert("Tu navegador no soporta autenticación biométrica");  
-        return;  
-      }  
-      try {  
-        await navigator.credentials.get({  
-          publicKey: {  
-            challenge: new Uint8Array([1,2,3,4]),  
-            allowCredentials: [],  
-            timeout: 60000,  
-            userVerification: "preferred"  
-          }  
-        });  
-        // Si fue exitoso  
-        showLoadingModal();  
-        input.value = localStorage.getItem("pinUsuario") || "111111"; // Marca como válida  
-      } catch (e) {  
-        alert("Autenticación biométrica cancelada o fallida");  
-      }  
-    }  
+      const db = firebase.database();
+      db.ref("usuarios/pinUsuario").once("value").then(snapshot => {
+        const pinGuardado = snapshot.val() || "111111";
 
-    function generateKeypad() {  
-      keypad.innerHTML = "";  
-      const numbers = [0,1,2,3,4,5,6,7,8,9];  
-      const shuffled = numbers.sort(() => Math.random() - 0.5);  
+        if (pinIngresado === pinGuardado) {
+          window.location.href = "https://tupagina.com";
+        } else {
+          modalContent.innerHTML = "❌ Contraseña incorrecta";
+          setTimeout(() => {
+            modal.style.display = "none";
+            modalContent.innerHTML = '<div class="loader"></div>Verificando...';
+            input.value = "";
+            updateDots();
+            title.style.opacity = 1;
+            generateKeypad();
+          }, 1500);
+        }
+      }).catch(error => {
+        console.error("Error al leer Firebase:", error);
+        modalContent.innerHTML = "⚠️ Error de conexión";
+        setTimeout(() => {
+          modal.style.display = "none";
+          modalContent.innerHTML = '<div class="loader"></div>Verificando...';
+          input.value = "";
+          updateDots();
+          title.style.opacity = 1;
+          generateKeypad();
+        }, 1500);
+      });
+    }
 
-      for (let i = 0; i < 9; i++) {  
-        const btn = document.createElement("button");  
-        btn.textContent = shuffled[i];  
-        btn.onclick = () => addNumber(shuffled[i]);  
-        keypad.appendChild(btn);  
-      }  
+    async function authenticateWithFingerprint() {
+      if (!window.PublicKeyCredential) {
+        alert("Tu navegador no soporta autenticación biométrica");
+        return;
+      }
+      try {
+        await navigator.credentials.get({
+          publicKey: {
+            challenge: new Uint8Array([1, 2, 3, 4]),
+            allowCredentials: [],
+            timeout: 60000,
+            userVerification: "preferred"
+          }
+        });
+        showLoadingModal();
+      } catch (e) {
+        alert("Autenticación biométrica cancelada o fallida");
+      }
+    }
 
-      const fingerprint = document.createElement("button");  
-      fingerprint.innerHTML = '<i class="fas fa-fingerprint fingerprint"></i>';  
-      fingerprint.onclick = authenticateWithFingerprint;  
-      keypad.appendChild(fingerprint);  
+    function generateKeypad() {
+      keypad.innerHTML = "";
+      const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+      const shuffled = numbers.sort(() => Math.random() - 0.5);
 
-      const btn0 = document.createElement("button");  
-      btn0.textContent = shuffled[9];  
-      btn0.onclick = () => addNumber(shuffled[9]);  
-      keypad.appendChild(btn0);  
+      for (let i = 0; i < 9; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = shuffled[i];
+        btn.onclick = () => addNumber(shuffled[i]);
+        keypad.appendChild(btn);
+      }
 
-      const del = document.createElement("button");  
-      del.innerHTML = '<i class="fas fa-delete-left"></i>';  
-      del.onclick = deleteNumber;  
-      keypad.appendChild(del);  
-    }  
+      const fingerprint = document.createElement("button");
+      fingerprint.innerHTML = '<i class="fas fa-fingerprint fingerprint"></i>';
+      fingerprint.onclick = authenticateWithFingerprint;
+      keypad.appendChild(fingerprint);
 
-    generateKeypad();  
+      const btn0 = document.createElement("button");
+      btn0.textContent = shuffled[9];
+      btn0.onclick = () => addNumber(shuffled[9]);
+      keypad.appendChild(btn0);
+
+      const del = document.createElement("button");
+      del.innerHTML = '<i class="fas fa-delete-left"></i>';
+      del.onclick = deleteNumber;
+      keypad.appendChild(del);
+    }
+
+    generateKeypad();
   </script>  
 </body>  
-</html>
+        </html>
