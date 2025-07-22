@@ -1,4 +1,4 @@
-const CACHE_NAME = 'yape';
+const CACHE_NAME = 'yape peru_v1';
 const urlsToCache = [
   '/',
   '/index.html',
