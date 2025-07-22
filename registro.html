@@ -1,11 +1,12 @@
-<!DOCTYPE html><html lang="es">
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#720e9e" />
-  <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -70,11 +71,31 @@
     <input type="number" id="monto" placeholder="Monto inicial" required>
     <input type="password" id="pin" placeholder="PIN de 6 dígitos" maxlength="6" required>
     <button onclick="registrarUsuario()">Registrarse</button>
-  </div>  <div class="modal" id="modal">
+  </div>
+
+  <div class="modal" id="modal">
     <div class="modal-content" id="modal-content">
       Registrando, espere un momento...
     </div>
-  </div>  <script>
+  </div>
+
+  <script>
+    // Configura tu Firebase aquí
+    const firebaseConfig = {
+      apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
+    authDomain: "yape-7c2d8.firebaseapp.com",
+    databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
+    projectId: "yape-7c2d8",
+    storageBucket: "yape-7c2d8.firebasestorage.app",
+    messagingSenderId: "906697506917",
+    appId: "1:906697506917:web:39812c83dd9d4b1987468c",
+    measurementId: "G-F4G428F4GZ"
+  };
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
     function registrarUsuario() {
       const usuario = document.getElementById('usuario').value;
       const correo = document.getElementById('correo').value;
@@ -87,23 +108,31 @@
         return;
       }
 
-      // Guardar datos en localStorage
-      localStorage.setItem("nombreUsuario", usuario);
-      localStorage.setItem("correoUsuario", correo);
-      localStorage.setItem("claveUsuario", clave);
-      localStorage.setItem("saldoUsuario", monto);
-      localStorage.setItem("pinUsuario", pin);
-
       const modal = document.getElementById("modal");
       const modalContent = document.getElementById("modal-content");
       modal.style.display = "flex";
+      modalContent.innerText = "Registrando, espere un momento...";
 
-      setTimeout(() => {
-        modalContent.innerText = "🎉 ¡Felicidades! Tu cuenta fue creada con éxito.";
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 2000);
-      }, 2000);
+      auth.createUserWithEmailAndPassword(correo, clave)
+        .then(userCredential => {
+          const user = userCredential.user;
+          return db.collection("usuarios").doc(user.uid).set({
+            nombre: usuario,
+            correo: correo,
+            monto: parseFloat(monto).toFixed(2),
+            pin: pin
+          });
+        })
+        .then(() => {
+          modalContent.innerText = "🎉 ¡Felicidades! Tu cuenta fue creada con éxito.";
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 2000);
+        })
+        .catch(error => {
+          modalContent.innerHTML = `<p style='color:red'>Error: ${error.message}</p>`;
+        });
     }
-  </script></body>
+  </script>
+</body>
 </html>
