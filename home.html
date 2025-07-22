@@ -275,9 +275,41 @@
     <button><i class="fas fa-qrcode"></i> ESCANEAR QR</button>
     <a href="https://ejemplo.com/yapear" target="_blank"><i class="fas fa-paper-plane"></i> YAPEAR</a>
   </div>
-
-  <!-- Scripts -->
   <script>
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "TU_DOMINIO.firebaseapp.com",
+      projectId: "TU_PROYECTO_ID",
+      storageBucket: "TU_PROYECTO_ID.appspot.com",
+      messagingSenderId: "ID_MENSAJES",
+      appId: "TU_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(async user => {
+      if (user) {
+        const doc = await db.collection("usuarios").doc(user.uid).get();
+        if (doc.exists) {
+          document.getElementById("nombre-usuario").textContent = doc.data().nombre;
+          document.getElementById("saldo-valor").textContent = `S/ ${doc.data().monto}`;
+        }
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    function toggleDropdown() {
+      const dropdown = document.getElementById("dropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    function mostrarSaldo() {
+      const saldo = document.getElementById("saldo-valor");
+      saldo.style.display = saldo.style.display === "none" ? "inline-block" : "none";
+    }
+
     let currentSlide = 0;
     const slideContainer = document.getElementById("slide-container");
     const totalSlides = slideContainer.children.length;
@@ -290,24 +322,6 @@
         dot.classList.toggle("active", index === currentSlide);
       });
     }, 5000);
-
-    function toggleDropdown() {
-      const dropdown = document.getElementById("dropdown");
-      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-    }
-
-  function mostrarSaldo() {
-    const saldo = document.getElementById("saldo-valor");
-    const monto = localStorage.getItem("saldoUsuario") || "0.00";
-    saldo.innerText = saldo.innerText === "" ? `S/ ${monto}` : "";
-  }
-
-// Mostrar nombre de usuario dinámico desde localStorage
-  const userLink = document.getElementById("userLink");
-  const nombre = localStorage.getItem("nombreUsuario") || "Usuario";
-
-  userLink.innerHTML = `<i class="fas fa-user"></i> Hola, ${nombre}`;
   </script>
-
 </body>
 </html>
