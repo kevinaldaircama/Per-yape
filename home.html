@@ -269,62 +269,106 @@
       <i class="fas fa-chevron-down"></i>
     </div>
     <div class="dropdown-content" id="dropdown">
-      <p>• Pago a Juan - S/50<br>• Recarga Movistar - S/10<br>• Transferencia recibida - S/100</p>
+  <div style="background: #fff; border-radius: 12px; padding: 1rem; color: #000;">
+    <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+      <strong>*** *** 780</strong><span style="float:right; color: #e53935;">- S/ 1.00</span><br>
+      <small style="color:#888;">Ayer 9:17 am</small>
     </div>
+    <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+      <strong>*** *** 780</strong><span style="float:right; color: #e53935;">- S/ 4.00</span><br>
+      <small style="color:#888;">Ayer 9:16 am</small>
+    </div>
+    <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+      <strong>*** *** 780</strong><span style="float:right; color: #e53935;">- S/ 8.00</span><br>
+      <small style="color:#888;">Ayer 9:10 am</small>
+    </div>
+    <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+      <strong>DALE - Alexander Estrada Solano</strong><span style="float:right; color: #43a047;">S/ 10.00</span><br>
+      <small style="color:#888;">19 jul. 2025 - 8:36 pm</small>
+    </div>
+    <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+      <strong>Recarga a 912 359 971</strong><span style="float:right; color: #e53935;">- S/ 10.00</span><br>
+      <small style="color:#888;">19 jul. 2025 - 3:08 pm</small>
+    </div>
+    <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+      <strong>Recarga a mi número</strong><span style="float:right; color: #e53935;">- S/ 10.00</span><br>
+      <small style="color:#888;">19 jul. 2025 - 3:08 pm</small>
+    </div>
+    <div style="padding: 10px 0;">
+      <strong>Recarga a 912 359 971</strong><span style="float:right; color: #e53935;">- S/ 30.00</span><br>
+      <small style="color:#888;">19 jul. 2025 - 3:07 pm</small>
+    </div>
+    <div style="text-align:center; color:#00c6a2; font-weight:bold; margin-top:10px;">VER TODOS</div>
+  </div>
+</div>
   </div>
 
   <!-- Botones -->
   <div class="footer">
     <button><i class="fas fa-qrcode"></i> ESCANEAR QR</button>
-    <a href="https://ejemplo.com/yapear" target="_blank"><i class="fas fa-paper-plane"></i> YAPEAR</a>
+    <a href="yapear.html" target="_blank"><i class="fas fa-qrcode"></i> YAPEAR</a>
   </div>
-  <script>
-    const firebaseConfig = {
-      apiKey: "TU_API_KEY",
-      authDomain: "TU_DOMINIO.firebaseapp.com",
-      projectId: "TU_PROYECTO_ID",
-      storageBucket: "TU_PROYECTO_ID.appspot.com",
-      messagingSenderId: "ID_MENSAJES",
-      appId: "TU_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-    auth.onAuthStateChanged(async user => {
-      if (user) {
-        const doc = await db.collection("usuarios").doc(user.uid).get();
-        if (doc.exists) {
-          document.getElementById("nombre-usuario").textContent = doc.data().nombre;
-          document.getElementById("saldo-valor").textContent = `S/ ${doc.data().monto}`;
-        }
-      } else {
-        window.location.href = "login.html";
+  const firebaseConfig = {
+    apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
+    authDomain: "yape-7c2d8.firebaseapp.com",
+    databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
+    projectId: "yape-7c2d8",
+    storageBucket: "yape-7c2d8.firebasestorage.app",
+    messagingSenderId: "906697506917",
+    appId: "1:906697506917:web:39812c83dd9d4b1987468c",
+    measurementId: "G-F4G428F4GZ"
+  };
+
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const userLink = document.getElementById("userLink");
+  const saldoValor = document.getElementById("saldo-valor");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const ref = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(ref);
+      if (docSnap.exists()) {
+        const datos = docSnap.data();
+        userLink.innerHTML = `<i class="fas fa-user"></i> Hola, ${datos.nombre}`;
+        saldoValor.textContent = `S/ ${datos.monto}`;
       }
+    } else {
+      window.location.href = "login.html";
+    }
+  });
+
+  window.toggleDropdown = function() {
+    const dropdown = document.getElementById("dropdown");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  }
+
+  window.mostrarSaldo = function() {
+    const saldo = document.getElementById("saldo-valor");
+    saldo.style.display = saldo.style.display === "none" ? "inline-block" : "none";
+  }
+
+  // Carrusel
+  let currentSlide = 0;
+  const slideContainer = document.getElementById("slide-container");
+  const totalSlides = slideContainer.children.length;
+  const dots = document.querySelectorAll(".dot");
+
+  setInterval(() => {
+    currentSlide = (currentSlide + 1) % totalSlides;
+    slideContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+    dots.forEach((dot, index) => {
+      dot.classList.toggle("active", index === currentSlide);
     });
-
-    function toggleDropdown() {
-      const dropdown = document.getElementById("dropdown");
-      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-    }
-
-    function mostrarSaldo() {
-      const saldo = document.getElementById("saldo-valor");
-      saldo.style.display = saldo.style.display === "none" ? "inline-block" : "none";
-    }
-
-    let currentSlide = 0;
-    const slideContainer = document.getElementById("slide-container");
-    const totalSlides = slideContainer.children.length;
-    const dots = document.querySelectorAll(".dot");
-
-    setInterval(() => {
-      currentSlide = (currentSlide + 1) % totalSlides;
-      slideContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
-      dots.forEach((dot, index) => {
-        dot.classList.toggle("active", index === currentSlide);
-      });
-    }, 5000);
-  </script>
+  }, 5000);
+</script>
 </body>
 </html>

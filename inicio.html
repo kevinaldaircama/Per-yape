@@ -8,29 +8,7 @@
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#720e9e" />
   <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png">
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
-      authDomain: "yape-7c2d8.firebaseapp.com",
-      databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
-      projectId: "yape-7c2d8",
-      storageBucket: "yape-7c2d8.appspot.com",
-      messagingSenderId: "906697506917",
-      appId: "1:906697506917:web:39812c83dd9d4b1987468c",
-      measurementId: "G-F4G428F4GZ"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-  </script>
-
   <style>
-    /* Aquí va tu CSS completo sin cambios */
     body {
       margin: 0;
       font-family: 'Arial', sans-serif;
@@ -94,7 +72,27 @@
     </div>
   </div>
 
-  <script>
+  <!-- Firebase modular -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
+      authDomain: "yape-7c2d8.firebaseapp.com",
+      databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
+      projectId: "yape-7c2d8",
+      storageBucket: "yape-7c2d8.firebasestorage.app",
+      messagingSenderId: "906697506917",
+      appId: "1:906697506917:web:39812c83dd9d4b1987468c",
+      measurementId: "G-F4G428F4GZ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
     const input = document.getElementById("clave");
     const title = document.getElementById("clave-title");
     const dots = document.getElementById("dots-container");
@@ -115,7 +113,7 @@
         title.style.opacity = 0;
         updateDots();
         if (input.value.length === 6) {
-          showLoadingModal();
+          autenticarPIN(input.value);
         }
       }
     }
@@ -126,34 +124,45 @@
         title.style.opacity = 1;
       }
       updateDots();
-      generateKeypad();
     }
 
-    function showLoadingModal() {
+    async function autenticarPIN(pinIngresado) {
       modal.style.display = "flex";
-      const pinIngresado = input.value;
+      modalContent.innerHTML = `<div class="loader"></div>Verificando...`;
 
-      db.collection("usuarios").doc("usuario1").get().then(doc => {
-        if (!doc.exists) {
-          modalContent.innerHTML = "❌ Usuario no encontrado";
-          setTimeout(resetModal, 1500);
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          modalContent.innerHTML = "⚠️ No has iniciado sesión";
+          setTimeout(() => window.location.href = "index.html", 2000);
           return;
         }
 
-        const pinGuardado = doc.data().pin;
-        console.log("PIN ingresado:", pinIngresado);
-        console.log("PIN en Firestore:", pinGuardado);
+        try {
+          const uid = user.uid;
+          const usuarioRef = doc(db, "usuarios", uid);
+          const docSnap = await getDoc(usuarioRef);
 
-        if (pinIngresado === pinGuardado) {
-          window.location.href = "https://tupagina.com";
-        } else {
-          modalContent.innerHTML = "❌ Contraseña incorrecta";
+          if (!docSnap.exists()) {
+            modalContent.innerHTML = "❌ Usuario no encontrado";
+            setTimeout(resetModal, 1500);
+            return;
+          }
+
+          const datos = docSnap.data();
+
+          if (pinIngresado === datos.pin) {
+            localStorage.setItem("nombreUsuario", datos.nombre);
+            localStorage.setItem("saldoUsuario", datos.monto);
+            window.location.href = "home.html";
+          } else {
+            modalContent.innerHTML = "❌ PIN incorrecto";
+            setTimeout(resetModal, 1500);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          modalContent.innerHTML = "⚠️ Error de conexión";
           setTimeout(resetModal, 1500);
         }
-      }).catch(error => {
-        console.error("Error leyendo Firestore:", error);
-        modalContent.innerHTML = "⚠️ Error de conexión";
-        setTimeout(resetModal, 1500);
       });
     }
 
@@ -163,26 +172,6 @@
       input.value = "";
       updateDots();
       title.style.opacity = 1;
-      generateKeypad();
-    }
-
-    function authenticateWithFingerprint() {
-      if (!window.PublicKeyCredential) {
-        alert("Tu navegador no soporta autenticación biométrica");
-        return;
-      }
-      navigator.credentials.get({
-        publicKey: {
-          challenge: new Uint8Array([1, 2, 3, 4]),
-          allowCredentials: [],
-          timeout: 60000,
-          userVerification: "preferred"
-        }
-      }).then(() => {
-        showLoadingModal();
-      }).catch(() => {
-        alert("Autenticación biométrica cancelada o fallida");
-      });
     }
 
     function generateKeypad() {
@@ -199,7 +188,7 @@
 
       const fingerprint = document.createElement("button");
       fingerprint.innerHTML = '<i class="fas fa-fingerprint fingerprint"></i>';
-      fingerprint.onclick = authenticateWithFingerprint;
+      fingerprint.onclick = () => alert("Función biométrica aún no implementada");
       keypad.appendChild(fingerprint);
 
       const btn0 = document.createElement("button");

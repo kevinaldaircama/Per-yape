@@ -94,9 +94,9 @@
           const usuario = doc.data();
           localStorage.setItem("nombreUsuario", usuario.nombre);
           localStorage.setItem("saldoUsuario", usuario.monto);
-          window.location.href = "yape.html";
+          window.location.href = "inicio.html";
         } else {
-          mensaje.innerText = "Usuario no encontrado en Firestore.";
+          mensaje.innerText = "Usuario no encontrado por favor comunicarse con el propietario para tener cuenta.";
         }
       } catch (error) {
         mensaje.innerText = `Error: ${error.message}`;
