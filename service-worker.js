@@ -8,6 +8,10 @@ const urlsToCache = [
   '/inicio.html'
   '/home.html'
   '/registro.html'
+  '/envio.html'
+  '/comprobante.html'
+  '/guarda.html'
+  '/mis-datos.html'
   
 ];
 
