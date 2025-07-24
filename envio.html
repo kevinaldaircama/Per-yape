@@ -50,14 +50,9 @@
       text-align: center;
     }
 
-    .error-message {
-      background-color: #f1f1f1;
-      color: #666;
-      font-size: 14px;
-      padding: 6px 16px;
-      border-radius: 20px;
-      display: none;
-      margin: 8px 0;
+    input[readonly] {
+      background-color: #f9f9f9;
+      color: #999;
     }
 
     .button-container {
@@ -85,6 +80,45 @@
       border-color: #ddd;
       cursor: not-allowed;
     }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 20% auto;
+      padding: 20px 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 350px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+      color: #d32f2f;
+    }
+
+    .modal-content p {
+      margin: 15px 0;
+    }
+
+    .close {
+      float: right;
+      font-size: 22px;
+      font-weight: bold;
+      color: #d32f2f;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -98,7 +132,6 @@
     <input type="text" id="nombre" placeholder="Escribe el nombre" required />
     <input type="tel" id="telefono" placeholder="Número de teléfono" maxlength="9" pattern="[0-9]{9}" required />
     <input type="number" id="monto" placeholder="Monto (s/)" min="0.1" step="0.01" required />
-    <div class="error-message" id="error-msg">El monto ingresado no es válido</div>
     <textarea id="mensaje" placeholder="Agregar mensaje (opcional)"></textarea>
   </div>
 
@@ -107,46 +140,22 @@
     <button id="btn-yapear" class="button" disabled>YAPEAR</button>
   </div>
 
+  <!-- Modal de saldo insuficiente -->
+  <div id="modalSaldo" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModalSaldo()">&times;</span>
+      <h2>Saldo insuficiente</h2>
+      <p>No cuentas con saldo suficiente para yapear.</p>
+    </div>
+  </div>
+
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
   <script>
-    const nombre = document.getElementById('nombre');
-    const telefono = document.getElementById('telefono');
-    const monto = document.getElementById('monto');
-    const mensaje = document.getElementById('mensaje');
-    const btnBancos = document.getElementById('btn-bancos');
-    const btnYapear = document.getElementById('btn-yapear');
-    const errorMsg = document.getElementById('error-msg');
-
-    function validarFormulario() {
-      const nombreVal = nombre.value.trim();
-      const telefonoVal = telefono.value.trim();
-      const montoVal = parseFloat(monto.value);
-
-      const esTelefonoValido = /^[0-9]{9}$/.test(telefonoVal);
-      const montoValido = !isNaN(montoVal) && montoVal > 0;
-
-      const camposValidos = nombreVal && esTelefonoValido && montoValido;
-
-      btnBancos.disabled = !camposValidos;
-      btnYapear.disabled = !camposValidos;
-
-      errorMsg.style.display = (monto.value && !montoValido) ? 'block' : 'none';
-    }
-
-    [nombre, telefono, monto].forEach(el => el.addEventListener('input', validarFormulario));
-
-    btnYapear.addEventListener('click', () => {
-      const nombreVal = encodeURIComponent(nombre.value.trim());
-      const telefonoVal = encodeURIComponent(telefono.value.trim());
-      const montoVal = encodeURIComponent(monto.value.trim());
-      const url = `comprobante.html?nombre=${nombreVal}&telefono=${telefonoVal}&monto=${montoVal}`;
-      window.location.href = url;
-    });
-
-    // 🔥 Firebase config (misma que index)
     const firebaseConfig = {
       apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
     authDomain: "yape-7c2d8.firebaseapp.com",
@@ -160,23 +169,94 @@
 
 
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const auth = firebase.auth();
+    const firestore = firebase.firestore();
+    const realtimeDB = firebase.database();
 
-    // Leer apodo desde URL
+    const nombre = document.getElementById('nombre');
+    const telefono = document.getElementById('telefono');
+    const monto = document.getElementById('monto');
+    const mensaje = document.getElementById('mensaje');
+    const btnBancos = document.getElementById('btn-bancos');
+    const btnYapear = document.getElementById('btn-yapear');
     const urlParams = new URLSearchParams(window.location.search);
     const apodo = urlParams.get("apodo");
 
+    function validarFormulario() {
+      const nombreVal = nombre.value.trim();
+      const telefonoVal = telefono.value.trim();
+      const montoVal = parseFloat(monto.value);
+      const esTelefonoValido = /^[0-9]{9}$/.test(telefonoVal);
+      const montoValido = !isNaN(montoVal) && montoVal > 0;
+      const camposValidos = nombreVal && esTelefonoValido && montoValido;
+      btnBancos.disabled = !camposValidos;
+      btnYapear.disabled = !camposValidos;
+    }
+
+    function mostrarModalSaldo() {
+      document.getElementById("modalSaldo").style.display = "block";
+    }
+
+    function cerrarModalSaldo() {
+      document.getElementById("modalSaldo").style.display = "none";
+    }
+
+    [nombre, telefono, monto].forEach(el => el.addEventListener('input', validarFormulario));
+
+    // Autocompletar datos desde Realtime Database
     if (apodo) {
-      db.ref("contactos/" + apodo).once("value")
+      realtimeDB.ref("contactos/" + apodo).once("value")
         .then(snapshot => {
           if (snapshot.exists()) {
             const data = snapshot.val();
             nombre.value = data.nombre || apodo;
             telefono.value = data.numero || "";
+            nombre.readOnly = true;
+            telefono.readOnly = true;
             validarFormulario();
           }
         });
     }
+
+    btnYapear.addEventListener('click', () => {
+      const nombreVal = nombre.value.trim();
+      const telefonoVal = telefono.value.trim();
+      const montoVal = parseFloat(monto.value.trim());
+
+      if (!nombreVal || !telefonoVal || isNaN(montoVal)) return;
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert("No hay usuario autenticado");
+        return;
+      }
+
+      const uid = user.uid;
+      const userDoc = firestore.collection("usuarios").doc(uid);
+
+      userDoc.get().then(doc => {
+        if (!doc.exists) {
+          mostrarModalSaldo();
+          return;
+        }
+
+        const data = doc.data();
+        const saldoActual = parseFloat(data.monto);
+
+        if (isNaN(saldoActual) || saldoActual < montoVal) {
+          mostrarModalSaldo();
+          return;
+        }
+
+        userDoc.update({
+          monto: (saldoActual - montoVal).toFixed(2)
+        }).then(() => {
+          const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&telefono=${encodeURIComponent(telefonoVal)}&monto=${montoVal}`;
+          window.location.href = url;
+        });
+      });
+    });
+
   </script>
 </body>
-</html>
+  </html>
