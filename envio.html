@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Yapear</title>
-   <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#720e9e" />
   <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png">
   <style>
@@ -27,22 +27,58 @@
       font-size: 18px;
       display: flex;
       align-items: center;
-      gap: 8px;
     }
 
     .header-title {
       font-weight: bold;
+      flex: 1;
+      text-align: center;
     }
 
     .content {
       width: 100%;
       max-width: 400px;
       text-align: center;
-      margin-top: 40px;
+      margin-top: 30px;
       padding: 0 20px;
     }
 
-    input, textarea {
+    #nombre-label {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #7B1FA2;
+    }
+
+    #monto-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 48px;
+      margin: 20px 0 10px;
+    }
+
+    #monto-container span {
+      color: #d1a2f1;
+      margin-right: 5px;
+    }
+
+    #monto {
+      font-size: 48px;
+      border: none;
+      outline: none;
+      width: 150px;
+      text-align: left;
+      color: #4A0072;
+    }
+
+    #errorMonto {
+      color: #888;
+      font-size: 14px;
+      display: none;
+      margin-bottom: 20px;
+    }
+
+    textarea {
       width: 100%;
       font-size: 16px;
       border: none;
@@ -51,11 +87,7 @@
       padding: 10px;
       margin-top: 24px;
       text-align: center;
-    }
-
-    input[readonly] {
-      background-color: #f9f9f9;
-      color: #999;
+      resize: none;
     }
 
     .button-container {
@@ -68,9 +100,9 @@
 
     .button {
       padding: 14px 24px;
-      border-radius: 10px;
+      border-radius: 14px;
       border: 1px solid #ccc;
-      background-color: #e0d7ec;
+      background-color: #f5f1f8;
       color: #7B1FA2;
       font-weight: bold;
       cursor: pointer;
@@ -127,15 +159,23 @@
 <body>
 
   <header>
-    <span>&lt;</span>
+    <span onclick="history.back()" style="cursor:pointer;">←</span>
     <span class="header-title">Yapear a</span>
+    <span style="visibility:hidden;">x</span>
   </header>
 
   <div class="content">
-    <input type="text" id="nombre" placeholder="Escribe el nombre" required />
-    <input type="tel" id="telefono" placeholder="Número de teléfono" maxlength="9" pattern="[0-9]{9}" required />
-    <input type="number" id="monto" placeholder="Monto (s/)" min="0.1" step="0.01" required />
-    <textarea id="mensaje" placeholder="Agregar mensaje (opcional)"></textarea>
+    <h2 id="nombre-label"></h2>
+    <input type="text" id="nombre" placeholder="Nombre" style="display:none;" />
+    <input type="tel" id="telefono" placeholder="Número de teléfono" maxlength="9" pattern="[0-9]{9}" style="display:none;" />
+
+    <div id="monto-container">
+      <span>s/</span>
+      <input type="number" id="monto" min="0.1" step="0.01" />
+    </div>
+    <p id="errorMonto">El monto ingresado no es válido</p>
+
+    <textarea id="mensaje" placeholder="Agregar mensaje"></textarea>
   </div>
 
   <div class="button-container">
@@ -143,7 +183,7 @@
     <button id="btn-yapear" class="button" disabled>YAPEAR</button>
   </div>
 
-  <!-- Modal de saldo insuficiente -->
+  <!-- Modal saldo -->
   <div id="modalSaldo" class="modal">
     <div class="modal-content">
       <span class="close" onclick="cerrarModalSaldo()">&times;</span>
@@ -152,7 +192,7 @@
     </div>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -161,15 +201,14 @@
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
-    authDomain: "yape-7c2d8.firebaseapp.com",
-    databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
-    projectId: "yape-7c2d8",
-    storageBucket: "yape-7c2d8.firebasestorage.app",
-    messagingSenderId: "906697506917",
-    appId: "1:906697506917:web:39812c83dd9d4b1987468c",
-    measurementId: "G-F4G428F4GZ"
-  };
-
+      authDomain: "yape-7c2d8.firebaseapp.com",
+      databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
+      projectId: "yape-7c2d8",
+      storageBucket: "yape-7c2d8.firebasestorage.app",
+      messagingSenderId: "906697506917",
+      appId: "1:906697506917:web:39812c83dd9d4b1987468c",
+      measurementId: "G-F4G428F4GZ"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
@@ -182,11 +221,14 @@
     const mensaje = document.getElementById('mensaje');
     const btnBancos = document.getElementById('btn-bancos');
     const btnYapear = document.getElementById('btn-yapear');
+    const errorMonto = document.getElementById('errorMonto');
+    const nombreLabel = document.getElementById('nombre-label');
+
     const urlParams = new URLSearchParams(window.location.search);
     const apodo = urlParams.get("apodo");
 
     function validarFormulario() {
-      const nombreVal = nombre.value.trim();
+      const nombreVal = nombreLabel.textContent.trim();
       const telefonoVal = telefono.value.trim();
       const montoVal = parseFloat(monto.value);
       const esTelefonoValido = /^[0-9]{9}$/.test(telefonoVal);
@@ -196,35 +238,36 @@
       btnYapear.disabled = !camposValidos;
     }
 
-    function mostrarModalSaldo() {
-      document.getElementById("modalSaldo").style.display = "block";
-    }
-
     function cerrarModalSaldo() {
       document.getElementById("modalSaldo").style.display = "none";
     }
 
-    [nombre, telefono, monto].forEach(el => el.addEventListener('input', validarFormulario));
+    function mostrarModalSaldo() {
+      document.getElementById("modalSaldo").style.display = "block";
+    }
 
-    // Autocompletar datos desde Realtime Database
+    monto.addEventListener('input', () => {
+      const valor = parseFloat(monto.value);
+      errorMonto.style.display = (isNaN(valor) || valor <= 0) ? "block" : "none";
+      validarFormulario();
+    });
+
     if (apodo) {
-      realtimeDB.ref("contactos/" + apodo).once("value")
-        .then(snapshot => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            nombre.value = data.nombre || apodo;
-            telefono.value = data.numero || "";
-            nombre.readOnly = true;
-            telefono.readOnly = true;
-            validarFormulario();
-          }
-        });
+      realtimeDB.ref("contactos/" + apodo).once("value").then(snapshot => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          nombreLabel.textContent = data.nombre || apodo;
+          telefono.value = data.numero || "";
+          validarFormulario();
+        }
+      });
     }
 
     btnYapear.addEventListener('click', () => {
-      const nombreVal = nombre.value.trim();
+      const nombreVal = nombreLabel.textContent.trim();
       const telefonoVal = telefono.value.trim();
       const montoVal = parseFloat(monto.value.trim());
+      const mensajeVal = mensaje.value.trim();
 
       if (!nombreVal || !telefonoVal || isNaN(montoVal)) return;
 
@@ -254,12 +297,20 @@
         userDoc.update({
           monto: (saldoActual - montoVal).toFixed(2)
         }).then(() => {
-          const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&telefono=${encodeURIComponent(telefonoVal)}&monto=${montoVal}`;
-          window.location.href = url;
+          firestore.collection("movimientos").add({
+            uid: uid,
+            nombreDestino: nombreVal,
+            numeroDestino: telefonoVal,
+            monto: montoVal,
+            mensaje: mensajeVal,
+            fecha: firebase.firestore.Timestamp.now()
+          }).then(() => {
+            const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&telefono=${encodeURIComponent(telefonoVal)}&monto=${montoVal}`;
+            window.location.href = url;
+          });
         });
       });
     });
-
   </script>
 </body>
   </html>
