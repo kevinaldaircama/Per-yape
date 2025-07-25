@@ -12,6 +12,7 @@ const urlsToCache = [
   '/comprobante.html'
   '/guarda.html'
   '/mis-datos.html'
+  '/login.html'
   
 ];
 
