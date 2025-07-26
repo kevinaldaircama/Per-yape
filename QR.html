@@ -1,32 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Escáner QR</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
-    body {
-      background-color: black;
-      color: white;
-      text-align: center;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 1rem;
-    }
-
-    #reader {
-      width: 300px;
-      margin: 2rem auto;
-    }
-
-    input[type="file"] {
-      margin-top: 1rem;
-    }
-
-    #result {
-      margin-top: 1rem;
-      color: lime;
-    }
+    body { background-color: black; color: white; text-align: center; font-family: Arial, sans-serif; padding: 1rem; }
+    #reader { width: 100%; max-width: 350px; margin: auto; }
+    input[type="file"] { margin-top: 1rem; }
+    #result { margin-top: 1rem; color: lime; }
   </style>
 </head>
 <body>
@@ -38,34 +21,31 @@
   <script>
     const resultElement = document.getElementById("result");
     const html5QrCode = new Html5Qrcode("reader");
-    let currentCameraId = null;
 
     Html5Qrcode.getCameras().then(cameras => {
-      if (cameras && cameras.length) {
-        const backCam = cameras.find(c => c.label.toLowerCase().includes("back") || c.label.toLowerCase().includes("environment"));
-        currentCameraId = backCam ? backCam.id : cameras[0].id;
+      const backCam = cameras.find(c => c.label.toLowerCase().includes("back") || c.label.toLowerCase().includes("environment"));
+      const camId = backCam ? backCam.id : cameras[0].id;
 
-        html5QrCode.start(
-          currentCameraId,
-          { fps: 10, qrbox: 250 },
-          qrCodeMessage => {
-            resultElement.innerText = "Código detectado: " + qrCodeMessage;
-            html5QrCode.stop();
+      html5QrCode.start(
+        camId,
+        { fps: 10, qrbox: 250 },
+        qrCodeMessage => {
+          resultElement.innerText = "Código detectado: " + qrCodeMessage;
+          html5QrCode.stop();
 
-            const qrLista = JSON.parse(localStorage.getItem("qrLista") || "[]");
-            const encontrado = qrLista.find(item => item.codigo === qrCodeMessage);
+          const qrLista = JSON.parse(localStorage.getItem("qrLista") || "[]");
+          const encontrado = qrLista.find(item => item.codigo === qrCodeMessage);
 
-            if (encontrado) {
-              const nombreEncoded = encodeURIComponent(encontrado.nombre);
-              const destinoEncoded = encodeURIComponent(encontrado.destino || "");
-              window.location.href = `yapear.html?nombre=${nombreEncoded}&destino=${destinoEncoded}`;
-            } else {
-              alert("Código no registrado en tu lista.");
-            }
-          },
-          err => {}
-        );
-      }
+          if (encontrado) {
+            const nombreEncoded = encodeURIComponent(encontrado.nombre);
+            const destinoEncoded = encodeURIComponent(encontrado.destino || "");
+            window.location.href = `yapear.html?nombre=${nombreEncoded}&destino=${destinoEncoded}`;
+          } else {
+            alert("Este código no está en tu lista.");
+          }
+        },
+        err => {}
+      );
     });
 
     document.getElementById("file-input").addEventListener("change", e => {
@@ -80,9 +60,9 @@
           if (encontrado) {
             const nombreEncoded = encodeURIComponent(encontrado.nombre);
             const destinoEncoded = encodeURIComponent(encontrado.destino || "");
-            window.location.href = `envioqr.html?nombre=${nombreEncoded}&destino=${destinoEncoded}`;
+            window.location.href = `yapear.html?nombre=${nombreEncoded}&destino=${destinoEncoded}`;
           } else {
-            alert("QR no encontrado en tu lista.");
+            alert("Este código no está en tu lista.");
           }
         });
     });
