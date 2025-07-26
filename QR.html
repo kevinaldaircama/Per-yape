@@ -30,17 +30,6 @@
       height: 300px;
     }
 
-    /* 🔒 OCULTAR recuadro blanco por defecto de html5-qrcode */
-    #reader div div {
-      border: none !important;
-      box-shadow: none !important;
-    }
-
-    #reader canvas {
-      outline: none !important;
-      box-shadow: none !important;
-    }
-
     .overlay {
       position: absolute;
       top: 0;
@@ -146,41 +135,51 @@
     let currentCameraId = null;
     let isFlashOn = false;
 
-    // Iniciar cámara
     Html5Qrcode.getCameras().then(cameras => {
       if (cameras && cameras.length) {
-        currentCameraId = cameras[0].id;
+        // Buscar cámara trasera primero
+        const backCam = cameras.find(cam =>
+          cam.label.toLowerCase().includes("back") ||
+          cam.label.toLowerCase().includes("environment")
+        );
+        currentCameraId = backCam ? backCam.id : cameras[0].id;
+
         html5QrCode.start(
           currentCameraId,
           { fps: 10, qrbox: 250 },
           qrCodeMessage => {
             resultElement.innerText = "Código detectado: " + qrCodeMessage;
             html5QrCode.stop();
-            // Redirigir si quieres:
+            // Aquí puedes redirigir si quieres:
             // window.location.href = `comprobante.html?data=${encodeURIComponent(qrCodeMessage)}`
           },
-          errorMessage => { }
-        );
+          errorMessage => { /* opcional: console.log(errorMessage); */ }
+        ).then(() => {
+          // FORZAR OCULTAR caja blanca después de renderizado
+          setTimeout(() => {
+            const container = document.querySelector("#reader div div");
+            if (container) container.style.border = "none";
+            const canvas = document.querySelector("#reader canvas");
+            if (canvas) canvas.style.boxShadow = "none";
+          }, 500);
+        });
       }
     }).catch(err => {
       alert("No se pudo acceder a la cámara.");
     });
 
-    // Subir imagen con QR
     document.getElementById("file-input").addEventListener("change", e => {
       const file = e.target.files[0];
       if (!file) return;
       html5QrCode.scanFile(file, true)
         .then(qrCodeMessage => {
           resultElement.innerText = "Código detectado en imagen: " + qrCodeMessage;
-          // También puedes redirigir desde imagen si quieres
         })
         .catch(err => {
           resultElement.innerText = "No se detectó QR en la imagen.";
         });
     });
 
-    // Encender linterna (si es compatible)
     function toggleFlash() {
       if (!currentCameraId) return;
       html5QrCode.applyVideoConstraints({
@@ -193,4 +192,4 @@
     }
   </script>
 </body>
-</html>
+  </html>
