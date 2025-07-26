@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>QR Local con Persistencia</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f3f4f6;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-container {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    input[type="text"], input[type="file"] {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    .btn-danger {
+      background-color: #ef4444;
+      color: white;
+      margin-top: 0.5rem;
+    }
+
+    .qr-card {
+      background-color: white;
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .qr-card img {
+      width: 150px;
+      border-radius: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h2>Gestión de QRs (local + persistente)</h2>
+
+  <div class="form-container">
+    <input type="text" id="nombreQR" placeholder="Nombre del QR" />
+    <input type="file" id="fotoQR" accept="image/*" />
+    <button class="btn btn-primary" onclick="guardarQR()">Guardar QR</button>
+  </div>
+
+  <div id="listaQRs"></div>
+
+  <script>
+    let lista = [];
+
+    function guardarQR() {
+      const nombre = document.getElementById("nombreQR").value;
+      const archivo = document.getElementById("fotoQR").files[0];
+
+      if (!nombre || !archivo) {
+        alert("Por favor ingresa un nombre y selecciona una imagen.");
+        return;
+      }
+
+      const lector = new FileReader();
+      lector.onload = function(e) {
+        const imagenBase64 = e.target.result;
+        const qr = {
+          id: Date.now(),
+          nombre: nombre,
+          imagen: imagenBase64
+        };
+        lista.unshift(qr);
+        guardarEnLocalStorage();
+        renderizarLista();
+      };
+      lector.readAsDataURL(archivo);
+
+      document.getElementById("nombreQR").value = "";
+      document.getElementById("fotoQR").value = "";
+    }
+
+    function eliminarQR(id) {
+      lista = lista.filter(qr => qr.id !== id);
+      guardarEnLocalStorage();
+      renderizarLista();
+    }
+
+    function guardarEnLocalStorage() {
+      localStorage.setItem("qrLista", JSON.stringify(lista));
+    }
+
+    function cargarDesdeLocalStorage() {
+      const datos = localStorage.getItem("qrLista");
+      if (datos) {
+        lista = JSON.parse(datos);
+      }
+    }
+
+    function renderizarLista() {
+      const contenedor = document.getElementById("listaQRs");
+      contenedor.innerHTML = "";
+      lista.forEach(qr => {
+        const div = document.createElement("div");
+        div.className = "qr-card";
+        div.innerHTML = `
+          <p><strong>${qr.nombre}</strong></p>
+          <img src="${qr.imagen}" alt="QR" />
+          <br>
+          <button class="btn btn-danger" onclick="eliminarQR(${qr.id})">Eliminar</button>
+        `;
+        contenedor.appendChild(div);
+      });
+    }
+
+    window.onload = function() {
+      cargarDesdeLocalStorage();
+      renderizarLista();
+    };
+  </script>
+</body>
+</html>
