@@ -130,68 +130,85 @@
   <p id="result"></p>
 
   <script>
-    const resultElement = document.getElementById("result");
-    const html5QrCode = new Html5Qrcode("reader");
-    let currentCameraId = null;
-    let isFlashOn = false;
+  const resultElement = document.getElementById("result");
+  const html5QrCode = new Html5Qrcode("reader");
+  let currentCameraId = null;
+  let isFlashOn = false;
 
-    // Buscar cámara trasera preferiblemente
-    Html5Qrcode.getCameras().then(cameras => {
-      if (cameras && cameras.length) {
-        const backCam = cameras.find(cam =>
-          cam.label.toLowerCase().includes("back") ||
-          cam.label.toLowerCase().includes("environment")
-        );
-        currentCameraId = backCam ? backCam.id : cameras[0].id;
+  Html5Qrcode.getCameras().then(cameras => {
+    if (cameras && cameras.length) {
+      const backCam = cameras.find(cam =>
+        cam.label.toLowerCase().includes("back") ||
+        cam.label.toLowerCase().includes("environment")
+      );
+      currentCameraId = backCam ? backCam.id : cameras[0].id;
 
-        html5QrCode.start(
-          currentCameraId,
-          { fps: 10, qrbox: 250 },
-          qrCodeMessage => {
-            resultElement.innerText = "Código detectado: " + qrCodeMessage;
-            html5QrCode.stop();
-            // Redirección opcional:
-            // window.location.href = `comprobante.html?data=${encodeURIComponent(qrCodeMessage)}`;
-          },
-          error => {}
-        ).then(() => {
-          // Ocultar recuadro blanco si aparece
-          setTimeout(() => {
-            const c = document.querySelector("#reader div div");
-            if (c) c.style.border = "none";
-            const canvas = document.querySelector("#reader canvas");
-            if (canvas) canvas.style.boxShadow = "none";
-          }, 500);
-        });
-      }
-    }).catch(err => {
-      alert("No se pudo acceder a la cámara. Verifica los permisos del navegador.");
-    });
+      html5QrCode.start(
+        currentCameraId,
+        { fps: 10, qrbox: 250 },
+        qrCodeMessage => {
+          resultElement.innerText = "Código detectado: " + qrCodeMessage;
+          html5QrCode.stop();
 
-    // Escanear desde imagen
-    document.getElementById("file-input").addEventListener("change", e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      html5QrCode.scanFile(file, true)
-        .then(qrCodeMessage => {
-          resultElement.innerText = "Código detectado en imagen: " + qrCodeMessage;
-        })
-        .catch(() => {
-          resultElement.innerText = "No se detectó QR en la imagen.";
-        });
-    });
+          // Buscar coincidencia en localStorage
+          const qrLista = JSON.parse(localStorage.getItem("qrLista") || "[]");
+          const encontrado = qrLista.find(item => item.nombre === qrCodeMessage);
 
-    // Activar linterna
-    function toggleFlash() {
-      if (!currentCameraId) return;
-      html5QrCode.applyVideoConstraints({
-        advanced: [{ torch: !isFlashOn }]
-      }).then(() => {
-        isFlashOn = !isFlashOn;
-      }).catch(() => {
-        alert("Tu cámara no soporta linterna.");
+          if (encontrado) {
+            const nombreEncoded = encodeURIComponent(encontrado.nombre);
+            const destinoEncoded = encodeURIComponent(encontrado.destino || "");
+            window.location.href = `yapear.html?nombre=${nombreEncoded}&destino=${destinoEncoded}`;
+          } else {
+            alert("Código leído: " + qrCodeMessage + "\n(No se encontró destino en los QR locales)");
+          }
+        },
+        error => {}
+      ).then(() => {
+        setTimeout(() => {
+          const c = document.querySelector("#reader div div");
+          if (c) c.style.border = "none";
+          const canvas = document.querySelector("#reader canvas");
+          if (canvas) canvas.style.boxShadow = "none";
+        }, 500);
       });
     }
-  </script>
+  }).catch(err => {
+    alert("No se pudo acceder a la cámara. Verifica permisos.");
+  });
+
+  document.getElementById("file-input").addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    html5QrCode.scanFile(file, true)
+      .then(qrCodeMessage => {
+        resultElement.innerText = "Código detectado en imagen: " + qrCodeMessage;
+
+        const qrLista = JSON.parse(localStorage.getItem("qrLista") || "[]");
+        const encontrado = qrLista.find(item => item.nombre === qrCodeMessage);
+
+        if (encontrado) {
+          const nombreEncoded = encodeURIComponent(encontrado.nombre);
+          const destinoEncoded = encodeURIComponent(encontrado.destino || "");
+          window.location.href = `yapear.html?nombre=${nombreEncoded}&destino=${destinoEncoded}`;
+        } else {
+          alert("Código leído: " + qrCodeMessage + "\n(No se encontró destino en los QR locales)");
+        }
+      })
+      .catch(() => {
+        resultElement.innerText = "No se detectó QR en la imagen.";
+      });
+  });
+
+  function toggleFlash() {
+    if (!currentCameraId) return;
+    html5QrCode.applyVideoConstraints({
+      advanced: [{ torch: !isFlashOn }]
+    }).then(() => {
+      isFlashOn = !isFlashOn;
+    }).catch(() => {
+      alert("Tu cámara no soporta linterna.");
+    });
+  }
+</script>
 </body>
 </html>
