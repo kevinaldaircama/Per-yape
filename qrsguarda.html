@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Local (Responsivo)</title>
+  <title>guarda QR </title>
   <style>
     * {
       box-sizing: border-box;
@@ -103,10 +103,11 @@
   </style>
 </head>
 <body>
-  <h2>Gestión de QRs (modo responsivo)</h2>
+  <h2>Guardar QR</h2>
 
   <div class="form-container">
     <input type="text" id="nombreQR" placeholder="Nombre del QR" />
+    <input type="text" id="destinoQR" placeholder="Destino del QR (opcional)" />
     <input type="file" id="fotoQR" accept="image/*" />
     <button class="btn btn-primary" onclick="guardarQR()">Guardar QR</button>
   </div>
@@ -117,7 +118,8 @@
     let lista = [];
 
     function guardarQR() {
-      const nombre = document.getElementById("nombreQR").value;
+      const nombre = document.getElementById("nombreQR").value.trim();
+      const destino = document.getElementById("destinoQR").value.trim();
       const archivo = document.getElementById("fotoQR").files[0];
 
       if (!nombre || !archivo) {
@@ -130,7 +132,8 @@
         const imagenBase64 = e.target.result;
         const qr = {
           id: Date.now(),
-          nombre: nombre,
+          nombre,
+          destino,
           imagen: imagenBase64
         };
         lista.unshift(qr);
@@ -140,6 +143,7 @@
       lector.readAsDataURL(archivo);
 
       document.getElementById("nombreQR").value = "";
+      document.getElementById("destinoQR").value = "";
       document.getElementById("fotoQR").value = "";
     }
 
@@ -173,6 +177,7 @@
         div.className = "qr-card";
         div.innerHTML = `
           <p><strong>${qr.nombre}</strong></p>
+          ${qr.destino ? `<p>Destino: <em>${qr.destino}</em></p>` : ""}
           <button class="btn btn-toggle" onclick="toggleQR(${qr.id})">Mostrar QR</button>
           <button class="btn btn-danger" onclick="eliminarQR(${qr.id})">Eliminar</button>
           <div class="qr-image" id="qr-img-${qr.id}">
