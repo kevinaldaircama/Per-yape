@@ -46,7 +46,7 @@
       left: 0;
       width: 100%;
       height: 2px;
-      background-color: #a020f0; /* morado */
+      background-color: #a020f0;
       animation: scan 2s linear infinite;
     }
 
@@ -135,9 +135,9 @@
     let currentCameraId = null;
     let isFlashOn = false;
 
+    // Buscar cámara trasera preferiblemente
     Html5Qrcode.getCameras().then(cameras => {
       if (cameras && cameras.length) {
-        // Buscar cámara trasera primero
         const backCam = cameras.find(cam =>
           cam.label.toLowerCase().includes("back") ||
           cam.label.toLowerCase().includes("environment")
@@ -150,24 +150,25 @@
           qrCodeMessage => {
             resultElement.innerText = "Código detectado: " + qrCodeMessage;
             html5QrCode.stop();
-            // Aquí puedes redirigir si quieres:
-            // window.location.href = `comprobante.html?data=${encodeURIComponent(qrCodeMessage)}`
+            // Redirección opcional:
+            // window.location.href = `comprobante.html?data=${encodeURIComponent(qrCodeMessage)}`;
           },
-          errorMessage => { /* opcional: console.log(errorMessage); */ }
+          error => {}
         ).then(() => {
-          // FORZAR OCULTAR caja blanca después de renderizado
+          // Ocultar recuadro blanco si aparece
           setTimeout(() => {
-            const container = document.querySelector("#reader div div");
-            if (container) container.style.border = "none";
+            const c = document.querySelector("#reader div div");
+            if (c) c.style.border = "none";
             const canvas = document.querySelector("#reader canvas");
             if (canvas) canvas.style.boxShadow = "none";
           }, 500);
         });
       }
     }).catch(err => {
-      alert("No se pudo acceder a la cámara.");
+      alert("No se pudo acceder a la cámara. Verifica los permisos del navegador.");
     });
 
+    // Escanear desde imagen
     document.getElementById("file-input").addEventListener("change", e => {
       const file = e.target.files[0];
       if (!file) return;
@@ -175,21 +176,22 @@
         .then(qrCodeMessage => {
           resultElement.innerText = "Código detectado en imagen: " + qrCodeMessage;
         })
-        .catch(err => {
+        .catch(() => {
           resultElement.innerText = "No se detectó QR en la imagen.";
         });
     });
 
+    // Activar linterna
     function toggleFlash() {
       if (!currentCameraId) return;
       html5QrCode.applyVideoConstraints({
         advanced: [{ torch: !isFlashOn }]
       }).then(() => {
         isFlashOn = !isFlashOn;
-      }).catch(err => {
+      }).catch(() => {
         alert("Tu cámara no soporta linterna.");
       });
     }
   </script>
 </body>
-  </html>
+</html>
