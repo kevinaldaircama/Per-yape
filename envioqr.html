@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Yapear a</title>
   <style>
     body {
@@ -74,6 +75,10 @@
       padding: 15px 0;
       cursor: pointer;
     }
+
+    input[readonly] {
+      background-color: #f0f0f0;
+    }
   </style>
 </head>
 <body>
@@ -84,7 +89,7 @@
   </header>
 
   <div class="container">
-    <input type="text" id="nombre" value="" />
+    <input type="text" id="nombre" value="" readonly />
     <div id="subtexto" style="color: gray;">Destino</div>
 
     <div class="monto">s/ <input type="number" id="monto" value="0" min="0" max="500" style="width: 80px; font-size: 48px; border: none; border-bottom: 2px solid #ccc;" /></div>
@@ -93,7 +98,7 @@
 
     <input type="text" id="mensaje" class="mensaje" placeholder="Agregar mensaje" />
 
-    <button class="btn-yapear" onclick="alert('Yape realizado')">YAPEAR</button>
+    <button class="btn-yapear" onclick="enviar()">YAPEAR</button>
   </div>
 
   <script>
@@ -106,6 +111,11 @@
     }
     if (destino) {
       document.getElementById("subtexto").textContent = destino;
+    }
+
+    function enviar() {
+      // Puedes enviar también mensaje y monto por query si quieres
+      window.location.href = "comprobante.html";
     }
   </script>
 </body>
