@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Escáner QR</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
@@ -30,14 +30,19 @@
       height: 300px;
     }
 
+    /* 🔒 Ocultar recuadro blanco de html5-qrcode */
+    #reader > div:first-child {
+      border: none !important;
+    }
+
     .overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 300px;
       height: 300px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
       box-sizing: border-box;
-      border: 3px solid rgba(255, 255, 255, 0.2);
     }
 
     .scan-line {
@@ -46,7 +51,7 @@
       left: 0;
       width: 100%;
       height: 2px;
-      background-color: purple;
+      background-color: #a020f0; /* morado */
       animation: scan 2s linear infinite;
     }
 
@@ -145,14 +150,13 @@
             resultElement.innerText = "Código detectado: " + qrCodeMessage;
             html5QrCode.stop();
           },
-          errorMessage => { /* silencio */ }
+          errorMessage => { }
         );
       }
     }).catch(err => {
       alert("No se pudo acceder a la cámara.");
     });
 
-    // Subir imagen con QR
     document.getElementById("file-input").addEventListener("change", e => {
       const file = e.target.files[0];
       if (!file) return;
@@ -165,7 +169,6 @@
         });
     });
 
-    // Encender linterna (solo si el dispositivo lo soporta)
     function toggleFlash() {
       if (!currentCameraId) return;
       html5QrCode.applyVideoConstraints({
@@ -178,4 +181,4 @@
     }
   </script>
 </body>
-</html>
+  </html>
