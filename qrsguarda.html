@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<YPE html>
 <html lang="es">
+es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>guarda QR </title>
+  <meta charset="UTF-8">
+  <title>GUARDAR QR</title>
   <style>
     * {
       box-sizing: border-box;
@@ -104,26 +104,23 @@
 </head>
 <body>
   <h2>Guardar QR</h2>
-
-  <div class="form-container">
-    <input type="text" id="nombreQR" placeholder="Nombre del QR" />
-    <input type="text" id="destinoQR" placeholder="Destino del QR (opcional)" />
-    <input type="file" id="fotoQR" accept="image/*" />
-    <button class="btn btn-primary" onclick="guardarQR()">Guardar QR</button>
-  </div>
-
-  <div class="qr-container" id="listaQRs"></div>
+  <input type="text" id="codigoQR" placeholder="Código único del QR (contenido real del QR)" /><br/>
+  <input type="text" id="nombreQR" placeholder="Nombre visible (ej: Kevin Camacho)" /><br/>
+  <input type="text" id="destinoQR" placeholder="Destino (ej: Yape, Recibo)" /><br/>
+  <input type="file" id="fotoQR" accept="image/*" /><br/>
+  <button onclick="guardarQR()">Guardar QR</button>
 
   <script>
     let lista = [];
 
     function guardarQR() {
+      const codigo = document.getElementById("codigoQR").value.trim();
       const nombre = document.getElementById("nombreQR").value.trim();
       const destino = document.getElementById("destinoQR").value.trim();
       const archivo = document.getElementById("fotoQR").files[0];
 
-      if (!nombre || !archivo) {
-        alert("Por favor ingresa un nombre y selecciona una imagen.");
+      if (!codigo || !nombre || !archivo) {
+        alert("Por favor ingresa código, nombre y una imagen.");
         return;
       }
 
@@ -132,65 +129,26 @@
         const imagenBase64 = e.target.result;
         const qr = {
           id: Date.now(),
+          codigo,
           nombre,
           destino,
           imagen: imagenBase64
         };
         lista.unshift(qr);
-        guardarEnLocalStorage();
-        renderizarLista();
+        localStorage.setItem("qrLista", JSON.stringify(lista));
+        alert("QR guardado correctamente.");
       };
       lector.readAsDataURL(archivo);
 
+      document.getElementById("codigoQR").value = "";
       document.getElementById("nombreQR").value = "";
       document.getElementById("destinoQR").value = "";
       document.getElementById("fotoQR").value = "";
     }
 
-    function eliminarQR(id) {
-      lista = lista.filter(qr => qr.id !== id);
-      guardarEnLocalStorage();
-      renderizarLista();
-    }
-
-    function guardarEnLocalStorage() {
-      localStorage.setItem("qrLista", JSON.stringify(lista));
-    }
-
-    function cargarDesdeLocalStorage() {
-      const datos = localStorage.getItem("qrLista");
-      if (datos) {
-        lista = JSON.parse(datos);
-      }
-    }
-
-    function toggleQR(id) {
-      const img = document.getElementById("qr-img-" + id);
-      img.style.display = (img.style.display === "none" || img.style.display === "") ? "block" : "none";
-    }
-
-    function renderizarLista() {
-      const contenedor = document.getElementById("listaQRs");
-      contenedor.innerHTML = "";
-      lista.forEach(qr => {
-        const div = document.createElement("div");
-        div.className = "qr-card";
-        div.innerHTML = `
-          <p><strong>${qr.nombre}</strong></p>
-          ${qr.destino ? `<p>Destino: <em>${qr.destino}</em></p>` : ""}
-          <button class="btn btn-toggle" onclick="toggleQR(${qr.id})">Mostrar QR</button>
-          <button class="btn btn-danger" onclick="eliminarQR(${qr.id})">Eliminar</button>
-          <div class="qr-image" id="qr-img-${qr.id}">
-            <img src="${qr.imagen}" alt="QR" />
-          </div>
-        `;
-        contenedor.appendChild(div);
-      });
-    }
-
-    window.onload = function() {
-      cargarDesdeLocalStorage();
-      renderizarLista();
+    window.onload = () => {
+      const data = localStorage.getItem("qrLista");
+      if (data) lista = JSON.parse(data);
     };
   </script>
 </body>
