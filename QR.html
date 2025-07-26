@@ -30,9 +30,15 @@
       height: 300px;
     }
 
-    /* 🔒 Ocultar recuadro blanco de html5-qrcode */
-    #reader > div:first-child {
+    /* 🔒 OCULTAR recuadro blanco por defecto de html5-qrcode */
+    #reader div div {
       border: none !important;
+      box-shadow: none !important;
+    }
+
+    #reader canvas {
+      outline: none !important;
+      box-shadow: none !important;
     }
 
     .overlay {
@@ -140,6 +146,7 @@
     let currentCameraId = null;
     let isFlashOn = false;
 
+    // Iniciar cámara
     Html5Qrcode.getCameras().then(cameras => {
       if (cameras && cameras.length) {
         currentCameraId = cameras[0].id;
@@ -149,6 +156,8 @@
           qrCodeMessage => {
             resultElement.innerText = "Código detectado: " + qrCodeMessage;
             html5QrCode.stop();
+            // Redirigir si quieres:
+            // window.location.href = `comprobante.html?data=${encodeURIComponent(qrCodeMessage)}`
           },
           errorMessage => { }
         );
@@ -157,18 +166,21 @@
       alert("No se pudo acceder a la cámara.");
     });
 
+    // Subir imagen con QR
     document.getElementById("file-input").addEventListener("change", e => {
       const file = e.target.files[0];
       if (!file) return;
       html5QrCode.scanFile(file, true)
         .then(qrCodeMessage => {
           resultElement.innerText = "Código detectado en imagen: " + qrCodeMessage;
+          // También puedes redirigir desde imagen si quieres
         })
         .catch(err => {
           resultElement.innerText = "No se detectó QR en la imagen.";
         });
     });
 
+    // Encender linterna (si es compatible)
     function toggleFlash() {
       if (!currentCameraId) return;
       html5QrCode.applyVideoConstraints({
@@ -181,4 +193,4 @@
     }
   </script>
 </body>
-  </html>
+</html>
