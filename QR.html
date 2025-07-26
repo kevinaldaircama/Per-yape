@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Escáner QR</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+    }
+    #reader {
+      width: 300px;
+      margin: 80px auto 20px;
+      border: 2px solid #666;
+    }
+    #file-upload {
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      background-color: #555;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Enfoca el código QR dentro del recuadro</h2>
+
+  <div id="reader"></div>
+  <input type="file" accept="image/*" id="file-upload" />
+
+  <p id="result"></p>
+
+  <script>
+    const resultElement = document.getElementById("result");
+    const html5QrCode = new Html5Qrcode("reader");
+
+    // Escaneo desde cámara
+    Html5Qrcode.getCameras().then(cameras => {
+      if (cameras && cameras.length) {
+        const cameraId = cameras[0].id;
+        html5QrCode.start(
+          cameraId,
+          {
+            fps: 10,
+            qrbox: 250
+          },
+          qrCodeMessage => {
+            resultElement.innerText = `Código detectado: ${qrCodeMessage}`;
+            html5QrCode.stop(); // Detener una vez escaneado
+          },
+          errorMessage => {
+            // Puedes mostrar errores si quieres
+          }
+        );
+      }
+    }).catch(err => {
+      alert("Permiso de cámara denegado o no disponible.");
+    });
+
+    // Escaneo desde imagen
+    document.getElementById("file-upload").addEventListener("change", (e) => {
+      if (e.target.files.length == 0) return;
+      const imageFile = e.target.files[0];
+      html5QrCode.scanFile(imageFile, true)
+        .then(qrCodeMessage => {
+          resultElement.innerText = `Código detectado en imagen: ${qrCodeMessage}`;
+        })
+        .catch(err => {
+          resultElement.innerText = "No se detectó ningún QR en la imagen.";
+        });
+    });
+  </script>
+</body>
+</html>
