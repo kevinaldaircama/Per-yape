@@ -60,7 +60,7 @@
           if (encontrado) {
             const nombreEncoded = encodeURIComponent(encontrado.nombre);
             const destinoEncoded = encodeURIComponent(encontrado.destino || "");
-            window.location.href = `yapear.html?nombre=${nombreEncoded}&destino=${destinoEncoded}`;
+            window.location.href = `envioqr.html?nombre=${nombreEncoded}&destino=${destinoEncoded}`;
           } else {
             alert("Este código no está en tu lista.");
           }
