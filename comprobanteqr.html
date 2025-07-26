@@ -87,10 +87,10 @@
 </head>
 <body>
 
-  <a href="#" class="cerrar">✕</a>
+  <a href="home.html" class="cerrar">✕</a>
 
   <div class="container">
-    <img src="imagen/yapelog.png" alt="Yape" style="width: 70px; margin-bottom: 10px;">
+    <img src="yapelog.png" alt="Yape" style="width: 70px; margin-bottom: 10px;">
 
     <div class="comprobante-box">
       <span class="titulo">¡Yapeaste!</span>
@@ -118,12 +118,11 @@
     </div>
 
     <div class="banner">
-      <img src="imagen/1.jpg" alt="Más en Yape">
+      <img src="" alt="Banner dinámico">
     </div>
   </div>
 
   <script>
-    // Leer datos de URL
     const params = new URLSearchParams(window.location.search);
     const nombre = decodeURIComponent(params.get("nombre") || "Desconocido");
     const monto = decodeURIComponent(params.get("monto") || "0");
@@ -133,17 +132,24 @@
     document.getElementById("monto").textContent = `S/${monto}`;
     document.getElementById("destino").textContent = destino;
 
-    // Fecha y hora actual
     const now = new Date();
-    const opcionesFecha = { day: '2-digit', month: 'short', year: 'numeric' };
-    const opcionesHora = { hour: 'numeric', minute: '2-digit', hour12: true };
+    document.getElementById("fecha").textContent = now.toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' });
+    document.getElementById("hora").textContent = now.toLocaleTimeString('es-PE', { hour: 'numeric', minute: '2-digit', hour12: true }).toLowerCase();
 
-    document.getElementById("fecha").textContent = now.toLocaleDateString('es-PE', opcionesFecha);
-    document.getElementById("hora").textContent = now.toLocaleTimeString('es-PE', opcionesHora).toLowerCase();
-
-    // Operación aleatoria
     const numeroOperacion = Math.floor(4000000 + Math.random() * 1000000);
     document.getElementById("operacion").textContent = numeroOperacion.toString().padStart(8, '0');
+
+    // Banner aleatorio
+    const banners = [
+      "imagen/1.jpg",
+      "imagen/2.jpg",
+      "imagen/3.jpg",
+      "imagen/4.jpg"
+    ];
+
+    const bannerEl = document.querySelector(".banner img");
+    const imagenAleatoria = banners[Math.floor(Math.random() * banners.length)];
+    bannerEl.src = imagenAleatoria;
   </script>
 </body>
-                                </html>
+</html>
