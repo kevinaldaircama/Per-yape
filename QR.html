@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Escáner QR</title>
   <meta name="theme-color" content="#720e9e" />
-  <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png">
+  <link rel="icon" href="imagen/app_icon_xxxhdpi.png">
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     body {
@@ -120,12 +120,10 @@
 
   <script>
     const html5QrCode = new Html5Qrcode("reader");
-    const resultElement = document.createElement("div");
-    document.body.appendChild(resultElement);
-
     let currentCameraId = null;
     let isFlashOn = false;
 
+    // Iniciar cámara
     Html5Qrcode.getCameras().then(cameras => {
       const backCam = cameras.find(c => c.label.toLowerCase().includes("back") || c.label.toLowerCase().includes("environment"));
       currentCameraId = backCam ? backCam.id : cameras[0].id;
@@ -134,48 +132,50 @@
         currentCameraId,
         { fps: 10, qrbox: 250 },
         qrCodeMessage => {
-          html5QrCode.stop();
+          html5QrCode.stop(); // Detiene la cámara al detectar QR
           const qrLista = JSON.parse(localStorage.getItem("qrLista") || "[]");
           const encontrado = qrLista.find(item => item.codigo === qrCodeMessage);
 
           if (encontrado) {
-            const nombreEncoded = encodeURIComponent(encontrado.nombre);
-            const destinoEncoded = encodeURIComponent(encontrado.destino || "");
-            window.location.href = `yapear.html?nombre=${nombreEncoded}&destino=${destinoEncoded}`;
+            const nombre = encodeURIComponent(encontrado.nombre);
+            const destino = encodeURIComponent(encontrado.destino || "");
+            window.location.href = `yapear.html?nombre=${nombre}&destino=${destino}`;
           } else {
             alert("Este código no está en tu lista.");
           }
         },
-        err => {}
+        err => {} // silencioso
       );
     });
 
+    // Activar/desactivar linterna
     function toggleFlash() {
       if (!currentCameraId) return;
       isFlashOn = !isFlashOn;
       html5QrCode.applyVideoConstraints({
         advanced: [{ torch: isFlashOn }]
       }).catch(() => {
-        alert("Tu dispositivo no permite controlar la linterna.");
+        alert("Tu dispositivo no permite activar la linterna.");
       });
     }
 
+    // Subir imagen con QR
     document.getElementById("file-input").addEventListener("change", e => {
       const file = e.target.files[0];
       if (!file) return;
-      html5QrCode.scanFile(file, true)
-        .then(qrCodeMessage => {
-          const qrLista = JSON.parse(localStorage.getItem("qrLista") || "[]");
-          const encontrado = qrLista.find(item => item.codigo === qrCodeMessage);
 
-          if (encontrado) {
-            const nombreEncoded = encodeURIComponent(encontrado.nombre);
-            const destinoEncoded = encodeURIComponent(encontrado.destino || "");
-            window.location.href = `envioqr.html?nombre=${nombreEncoded}&destino=${destinoEncoded}`;
-          } else {
-            alert("Este código no está en tu lista.");
-          }
-        });
+      html5QrCode.scanFile(file, true).then(qrCodeMessage => {
+        const qrLista = JSON.parse(localStorage.getItem("qrLista") || "[]");
+        const encontrado = qrLista.find(item => item.codigo === qrCodeMessage);
+
+        if (encontrado) {
+          const nombre = encodeURIComponent(encontrado.nombre);
+          const destino = encodeURIComponent(encontrado.destino || "");
+          window.location.href = `envioqr.html?nombre=${nombre}&destino=${destino}`;
+        } else {
+          alert("Este código no está en tu lista.");
+        }
+      });
     });
   </script>
 </body>
