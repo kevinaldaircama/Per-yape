@@ -1,41 +1,140 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Escáner QR</title>
-  <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#720e9e" />
-  <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png"> 
+  <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png">
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
-    body { background-color: black; color: white; text-align: center; font-family: Arial, sans-serif; padding: 1rem; }
-    #reader { width: 100%; max-width: 350px; margin: auto; }
-    input[type="file"] { margin-top: 1rem; }
-    #result { margin-top: 1rem; color: lime; }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    #reader {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    #overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .scan-box {
+      width: 250px;
+      height: 250px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(114, 14, 158, 0.7);
+    }
+
+    .scan-line {
+      height: 2px;
+      width: 100%;
+      background-color: #bb00ff;
+      position: absolute;
+      animation: scan 2s infinite;
+    }
+
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+
+    .instructions {
+      position: absolute;
+      bottom: 140px;
+      text-align: center;
+      font-size: 16px;
+      color: white;
+    }
+
+    .button-group {
+      width: 100%;
+      padding: 1rem;
+      background: black;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    button, .file-btn {
+      padding: 1rem;
+      background-color: white;
+      color: #720e9e;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <h2>Escanea un QR</h2>
   <div id="reader"></div>
-  <input type="file" id="file-input" accept="image/*" />
-  <p id="result"></p>
+
+  <div id="overlay">
+    <div class="scan-box">
+      <div class="scan-line"></div>
+    </div>
+  </div>
+
+  <div class="instructions">
+    Enfoca el código QR dentro<br>del recuadro
+  </div>
+
+  <div class="button-group">
+    <button onclick="toggleFlash()">Encender linterna</button>
+    <label for="file-input" class="file-btn">Subir una imagen con QR</label>
+    <input type="file" id="file-input" accept="image/*" />
+  </div>
 
   <script>
-    const resultElement = document.getElementById("result");
     const html5QrCode = new Html5Qrcode("reader");
+    const resultElement = document.createElement("div");
+    document.body.appendChild(resultElement);
+
+    let currentCameraId = null;
+    let isFlashOn = false;
 
     Html5Qrcode.getCameras().then(cameras => {
       const backCam = cameras.find(c => c.label.toLowerCase().includes("back") || c.label.toLowerCase().includes("environment"));
-      const camId = backCam ? backCam.id : cameras[0].id;
+      currentCameraId = backCam ? backCam.id : cameras[0].id;
 
       html5QrCode.start(
-        camId,
+        currentCameraId,
         { fps: 10, qrbox: 250 },
         qrCodeMessage => {
-          resultElement.innerText = "Código detectado: " + qrCodeMessage;
           html5QrCode.stop();
-
           const qrLista = JSON.parse(localStorage.getItem("qrLista") || "[]");
           const encontrado = qrLista.find(item => item.codigo === qrCodeMessage);
 
@@ -51,12 +150,21 @@
       );
     });
 
+    function toggleFlash() {
+      if (!currentCameraId) return;
+      isFlashOn = !isFlashOn;
+      html5QrCode.applyVideoConstraints({
+        advanced: [{ torch: isFlashOn }]
+      }).catch(() => {
+        alert("Tu dispositivo no permite controlar la linterna.");
+      });
+    }
+
     document.getElementById("file-input").addEventListener("change", e => {
       const file = e.target.files[0];
       if (!file) return;
       html5QrCode.scanFile(file, true)
         .then(qrCodeMessage => {
-          resultElement.innerText = "Código detectado en imagen: " + qrCodeMessage;
           const qrLista = JSON.parse(localStorage.getItem("qrLista") || "[]");
           const encontrado = qrLista.find(item => item.codigo === qrCodeMessage);
 
