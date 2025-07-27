@@ -14,13 +14,22 @@
       color: white;
       font-family: Arial, sans-serif;
       text-align: center;
-      overflow: hidden;
+      overflow-x: hidden;
+    }
+    #reader-container {
+      width: 100vw;
+      max-width: 100%;
+      margin: 0 auto;
+      padding-top: 2rem;
+      position: relative;
     }
     #reader {
       width: 100%;
-      max-width: 350px;
-      margin: 2rem auto 1rem;
+      height: 100vw;
+      max-height: 400px;
+      margin: 0 auto;
       position: relative;
+      z-index: 5;
     }
     .overlay {
       position: absolute;
@@ -33,13 +42,13 @@
       transform: translate(-50%, -50%);
       box-sizing: border-box;
       z-index: 10;
+      pointer-events: none;
     }
     .scan-line {
       position: absolute;
       height: 2px;
       background: #a63bff;
       width: 100%;
-      top: 0%;
       animation: scan 2s linear infinite;
     }
     @keyframes scan {
@@ -63,7 +72,8 @@
   </style>
 </head>
 <body>
-  <div id="reader">
+  <div id="reader-container">
+    <div id="reader"></div>
     <div class="overlay">
       <div class="scan-line"></div>
     </div>
@@ -76,13 +86,17 @@
     let torchOn = false;
 
     Html5Qrcode.getCameras().then(cameras => {
+      if (!cameras || cameras.length === 0) {
+        alert("No se encontró ninguna cámara disponible.");
+        return;
+      }
       const backCam = cameras.find(c => c.label.toLowerCase().includes("back") || c.label.toLowerCase().includes("environment"));
       const camId = backCam ? backCam.id : cameras[0].id;
       currentCameraId = camId;
 
       html5QrCode.start(
         camId,
-        { fps: 10, qrbox: 250 },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
         qrCodeMessage => {
           resultElement.innerText = "Código detectado: " + qrCodeMessage;
           html5QrCode.stop();
@@ -98,8 +112,12 @@
             alert("Este código no está en tu lista.");
           }
         },
-        err => {}
+        err => {
+          console.warn("Error de escaneo", err);
+        }
       );
+    }).catch(err => {
+      alert("Error al acceder a las cámaras: " + err);
     });
 
     document.getElementById("file-input").addEventListener("change", e => {
@@ -132,4 +150,4 @@
       });
     }
   </script></body>
-    </html>
+</html>
