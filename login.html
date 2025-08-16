@@ -4,75 +4,130 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
+  
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/> 
+  
+  <!-- Manifest -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#720e9e" />
   <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png"> 
+  
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #7B1FA2, #9C27B0);
       padding: 20px;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
+
     .container {
       max-width: 400px;
-      background: white;
-      padding: 20px;
-      margin: auto;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      animation: fadeIn 0.8s ease-in-out;
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     h2 {
       text-align: center;
       color: #6a0dad;
+      margin-bottom: 20px;
     }
+
     input {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin: 10px 0;
-      border-radius: 5px;
+      border-radius: 8px;
       border: 1px solid #ccc;
+      transition: border 0.3s;
     }
+
+    input:focus {
+      border-color: #6a0dad;
+      outline: none;
+    }
+
     button {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       background-color: #6a0dad;
       color: #fff;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
+      margin-top: 10px;
+      transition: background 0.3s, transform 0.2s;
     }
+
+    button:hover {
+      background-color: #5a0099;
+      transform: scale(1.03);
+    }
+
+    .secondary-btn {
+      background-color: #2EC4B6;
+      margin-top: 15px;
+    }
+
+    .secondary-btn:hover {
+      background-color: #28a99b;
+    }
+
     .message {
       text-align: center;
       margin-top: 15px;
+      font-size: 14px;
+      color: #333;
+      min-height: 20px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Iniciar Sesión</h2>
+    <h2><i class="fa-solid fa-user-lock"></i> Iniciar Sesión</h2>
     <input type="email" id="correo" placeholder="Correo electrónico" required>
     <input type="password" id="clave" placeholder="Contraseña" required>
     <button onclick="iniciarSesion()">Ingresar</button>
+    
+    <!-- Botón para solicitar cuenta -->
+    <button class="secondary-btn" onclick="window.location.href='https://tusolicitud.com'">
+      <i class="fa-solid fa-user-plus"></i> Solicitar Cuenta
+    </button>
+
     <div class="message" id="mensaje"></div>
   </div>
 
   <script>
-    // Configura tu Firebase aquí
+    // Configuración de Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
-    authDomain: "yape-7c2d8.firebaseapp.com",
-    databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
-    projectId: "yape-7c2d8",
-    storageBucket: "yape-7c2d8.firebasestorage.app",
-    messagingSenderId: "906697506917",
-    appId: "1:906697506917:web:39812c83dd9d4b1987468c",
-    measurementId: "G-F4G428F4GZ"
-  };
+      authDomain: "yape-7c2d8.firebaseapp.com",
+      databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
+      projectId: "yape-7c2d8",
+      storageBucket: "yape-7c2d8.firebasestorage.app",
+      messagingSenderId: "906697506917",
+      appId: "1:906697506917:web:39812c83dd9d4b1987468c",
+      measurementId: "G-F4G428F4GZ"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
@@ -83,7 +138,7 @@
       const clave = document.getElementById('clave').value;
       const mensaje = document.getElementById('mensaje');
 
-      mensaje.innerText = "Verificando...";
+      mensaje.innerText = "🔄 Verificando...";
 
       try {
         const credenciales = await auth.signInWithEmailAndPassword(correo, clave);
@@ -96,10 +151,10 @@
           localStorage.setItem("saldoUsuario", usuario.monto);
           window.location.href = "inicio.html";
         } else {
-          mensaje.innerText = "Usuario no encontrado por favor comunicarse con el propietario para tener cuenta.";
+          mensaje.innerText = "⚠️ Usuario no encontrado. Solicite una cuenta.";
         }
       } catch (error) {
-        mensaje.innerText = `Error: ${error.message}`;
+        mensaje.innerText = `❌ Error: ${error.message}`;
       }
     }
   </script>
