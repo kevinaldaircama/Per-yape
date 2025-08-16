@@ -3,41 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Yape inicio</title>
+  <title>Yape</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#720e9e" />
   <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png">
+
   <style>
     body {
       margin: 0;
-      font-family: 'Arial', sans-serif;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
       background-color: #720e9e;
-      color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
+      height: 100vh;
+      overflow: hidden;
     }
+
+    /* Splash logo */
+    .splash {
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:#720e9e;
+      display:flex; justify-content:center; align-items:center;
+      z-index:1000;
+      animation: fadeOut 1s ease 2s forwards;
+    }
+    .splash img {
+      width: 160px;
+      animation: zoomIn 1s ease;
+    }
+    @keyframes zoomIn {
+      from {transform: scale(0.6); opacity:0;}
+      to {transform: scale(1); opacity:1;}
+    }
+    @keyframes fadeOut {
+      to {opacity:0; visibility:hidden;}
+    }
+
     .top-bar { width: 100%; padding: 10px 20px; display: flex; justify-content: flex-end; }
-    .help-btn { background-color: #8643d0; border-radius: 20px; padding: 5px 12px; font-size: 14px; color: white; text-decoration: none; display: flex; align-items: center; }
+    .help-btn { background-color: #8643d0; border-radius: 20px; padding: 6px 14px; font-size: 14px; color: white; text-decoration: none; display: flex; align-items: center; }
     .help-btn i { margin-right: 6px; }
-    .qr-section img { width: 200px; border-radius: 16px; margin-top: 10px; }
-    .form-section { background-color: white; color: #6a0dad; width: 100%; border-radius: 0; padding: 30px 0 40px; margin-top: 30px; text-align: center; }
-    .title { font-size: 20px; margin-bottom: 20px; transition: opacity 0.3s ease; }
-    .dots { display: flex; justify-content: center; margin-bottom: 20px; gap: 10px; }
-    .dot { width: 12px; height: 12px; border-radius: 50%; background-color: #6a0dad; visibility: hidden; }
-    .keypad { display: grid; grid-template-columns: repeat(3, 80px); gap: 12px; justify-content: center; }
-    .keypad button { font-size: 20px; background-color: #f2f2f2; border: none; padding: 15px 0; border-radius: 12px; color: #3d3d3d; cursor: pointer; transition: transform 0.1s; }
-    .keypad button:active { transform: scale(0.92); }
-    .forgot a { color: #00cfcf; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 20px; font-size: 14px; }
-    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 999; }
-    .modal-content { background: white; padding: 30px; border-radius: 12px; text-align: center; color: #6a0dad; font-weight: bold; font-size: 16px; }
-    .loader { border: 5px solid #eee; border-top: 5px solid #6a0dad; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .qr-section img { width: 180px; border-radius: 16px; margin-top: 10px; }
+
+    .form-section { background-color: white; color: #6a0dad; width: 100%; border-radius: 24px 24px 0 0; padding: 40px 0; margin-top: 30px; text-align: center; }
+    .title { font-size: 20px; margin-bottom: 25px; }
+
+    /* Puntos PIN */
+    .dots { display: flex; justify-content: center; margin-bottom: 30px; gap: 16px; }
+    .dot { width: 16px; height: 16px; border-radius: 50%; background-color: #6a0dad; visibility: hidden; }
+    .dot.active { visibility: visible; }
+
+    /* Teclado */
+    .keypad { display: grid; grid-template-columns: repeat(3, 80px); gap: 15px; justify-content: center; }
+    .keypad button { font-size: 24px; background-color: #f2f2f2; border: none; padding: 20px 0; border-radius: 50%; color: #3d3d3d; cursor: pointer; }
+    .keypad button:active { background:#d6d6d6; }
+    .fingerprint { color: #6a0dad; font-size: 26px; }
+
+    .forgot a { color: #00cfcf; font-weight: bold; text-decoration: none; display: inline-block; margin-top: 25px; font-size: 14px; }
+
+    /* Modal */
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 999; }
+    .modal-content { background: white; padding: 30px; border-radius: 16px; text-align: center; color: #6a0dad; font-weight: bold; font-size: 16px; }
+    .loader { border: 5px solid #eee; border-top: 5px solid #6a0dad; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
   </style>
 </head>
-
 <body>
+  <!-- Splash -->
+  <div class="splash">
+    <img src="imagen/logo_yape.png" alt="Logo Yape">
+  </div>
+
   <div class="top-bar">
     <a class="help-btn" href="#" target="_blank">
       <i class="fas fa-headset"></i>Ayuda
@@ -61,10 +101,11 @@
     </div>
     <div class="keypad" id="keypad"></div>
     <div class="forgot">
-      <a href="#" target="_blank">OLVIDO O CAMBIO DE CLAVE</a>
+      <a href="#">¿Olvidaste tu clave?</a>
     </div>
   </div>
 
+  <!-- Modal -->
   <div class="modal" id="modal">
     <div class="modal-content" id="modal-content">
       <div class="loader"></div>
@@ -72,7 +113,6 @@
     </div>
   </div>
 
-  <!-- Firebase modular -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
@@ -81,12 +121,10 @@
     const firebaseConfig = {
       apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
       authDomain: "yape-7c2d8.firebaseapp.com",
-      databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
       projectId: "yape-7c2d8",
-      storageBucket: "yape-7c2d8.firebasestorage.app",
+      storageBucket: "yape-7c2d8.appspot.com",
       messagingSenderId: "906697506917",
       appId: "1:906697506917:web:39812c83dd9d4b1987468c",
-      measurementId: "G-F4G428F4GZ"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -94,7 +132,6 @@
     const auth = getAuth(app);
 
     const input = document.getElementById("clave");
-    const title = document.getElementById("clave-title");
     const dots = document.getElementById("dots-container");
     const modal = document.getElementById("modal");
     const modalContent = document.getElementById("modal-content");
@@ -103,14 +140,15 @@
     function updateDots() {
       const length = input.value.length;
       for (let i = 1; i <= 6; i++) {
-        document.getElementById("dot" + i).style.visibility = i <= length ? "visible" : "hidden";
+        const dot = document.getElementById("dot" + i);
+        dot.classList.remove("active");
+        if (i <= length) dot.classList.add("active");
       }
     }
 
     function addNumber(num) {
       if (input.value.length < 6) {
         input.value += num;
-        title.style.opacity = 0;
         updateDots();
         if (input.value.length === 6) {
           autenticarPIN(input.value);
@@ -120,9 +158,6 @@
 
     function deleteNumber() {
       input.value = input.value.slice(0, -1);
-      if (input.value.length === 0) {
-        title.style.opacity = 1;
-      }
       updateDots();
     }
 
@@ -138,13 +173,12 @@
         }
 
         try {
-          const uid = user.uid;
-          const usuarioRef = doc(db, "usuarios", uid);
+          const usuarioRef = doc(db, "usuarios", user.uid);
           const docSnap = await getDoc(usuarioRef);
 
           if (!docSnap.exists()) {
             modalContent.innerHTML = "❌ Usuario no encontrado";
-            setTimeout(resetModal, 1500);
+            setTimeout(() => modal.style.display = "none", 1500);
             return;
           }
 
@@ -156,52 +190,45 @@
             window.location.href = "home.html";
           } else {
             modalContent.innerHTML = "❌ PIN incorrecto";
-            setTimeout(resetModal, 1500);
+            setTimeout(() => {
+              modal.style.display = "none";
+              input.value = "";
+              updateDots();
+            }, 1500);
           }
-        } catch (error) {
-          console.error("Error:", error);
+        } catch (e) {
           modalContent.innerHTML = "⚠️ Error de conexión";
-          setTimeout(resetModal, 1500);
+          setTimeout(() => modal.style.display = "none", 1500);
         }
       });
     }
 
-    function resetModal() {
-      modal.style.display = "none";
-      modalContent.innerHTML = '<div class="loader"></div>Verificando...';
-      input.value = "";
-      updateDots();
-      title.style.opacity = 1;
-    }
-
     function generateKeypad() {
       keypad.innerHTML = "";
-      const numbers = [...Array(10).keys()];
-      const shuffled = numbers.sort(() => Math.random() - 0.5);
+      const layout = [1,2,3,4,5,6,7,8,9,"huella",0,"del"];
 
-      for (let i = 0; i < 9; i++) {
+      layout.forEach(item => {
         const btn = document.createElement("button");
-        btn.textContent = shuffled[i];
-        btn.onclick = () => addNumber(shuffled[i]);
+        if (typeof item === "number") {
+          btn.textContent = item;
+          btn.onclick = () => addNumber(item);
+        } else if (item === "huella") {
+          btn.innerHTML = '<i class="fas fa-fingerprint fingerprint"></i>';
+          btn.onclick = () => {
+            if (window.PublicKeyCredential) {
+              // WebAuthn biometría real
+              alert("Autenticación biométrica disponible en móviles");
+            } else {
+              alert("Tu dispositivo no soporta biometría");
+            }
+          };
+        } else if (item === "del") {
+          btn.innerHTML = '<i class="fas fa-delete-left"></i>';
+          btn.onclick = deleteNumber;
+        }
         keypad.appendChild(btn);
-      }
-
-      const fingerprint = document.createElement("button");
-      fingerprint.innerHTML = '<i class="fas fa-fingerprint fingerprint"></i>';
-      fingerprint.onclick = () => alert("Función biométrica aún no implementada");
-      keypad.appendChild(fingerprint);
-
-      const btn0 = document.createElement("button");
-      btn0.textContent = shuffled[9];
-      btn0.onclick = () => addNumber(shuffled[9]);
-      keypad.appendChild(btn0);
-
-      const del = document.createElement("button");
-      del.innerHTML = '<i class="fas fa-delete-left"></i>';
-      del.onclick = deleteNumber;
-      keypad.appendChild(del);
+      });
     }
-
     generateKeypad();
   </script>
 </body>
