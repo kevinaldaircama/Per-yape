@@ -15,18 +15,18 @@
       color: #4A0072;
       display: flex;
       flex-direction: column;
-      align-items: center;
       height: 100vh;
     }
 
     header {
-      background-color: #7B1FA2;
+      background: linear-gradient(90deg, #7B1FA2, #9c27b0);
       color: white;
       width: 100%;
-      padding: 12px 16px;
+      padding: 16px;
       font-size: 18px;
       display: flex;
       align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
     .header-title {
@@ -36,84 +36,101 @@
     }
 
     .content {
+      flex: 1;
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      margin: auto;
       text-align: center;
-      margin-top: 30px;
-      padding: 0 20px;
+      padding: 20px;
     }
 
     #nombre-label {
-      font-size: 20px;
-      margin-bottom: 20px;
+      font-size: 22px;
+      font-weight: 600;
+      margin: 15px 0 25px;
       color: #7B1FA2;
     }
 
     #monto-container {
       display: flex;
       justify-content: center;
-      align-items: center;
-      font-size: 48px;
+      align-items: flex-end;
+      font-size: 50px;
       margin: 20px 0 10px;
+      border-bottom: 2px solid #e1bee7;
+      padding-bottom: 5px;
     }
 
     #monto-container span {
-      color: #d1a2f1;
+      font-size: 36px;
+      color: #9c27b0;
       margin-right: 5px;
     }
 
     #monto {
-      font-size: 48px;
+      font-size: 50px;
       border: none;
       outline: none;
-      width: 150px;
+      width: 200px;
       text-align: left;
       color: #4A0072;
+      font-weight: bold;
     }
 
     #errorMonto {
-      color: #888;
+      color: #e53935;
       font-size: 14px;
       display: none;
-      margin-bottom: 20px;
+      margin-top: 8px;
     }
 
     textarea {
       width: 100%;
       font-size: 16px;
       border: none;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 2px solid #ccc;
       outline: none;
-      padding: 10px;
-      margin-top: 24px;
+      padding: 12px;
+      margin-top: 30px;
       text-align: center;
       resize: none;
+      transition: border 0.3s;
+    }
+    textarea:focus {
+      border-bottom: 2px solid #9c27b0;
     }
 
     .button-container {
       display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: auto;
-      margin-bottom: 40px;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 20px;
+      background: #fafafa;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
     }
 
     .button {
-      padding: 14px 24px;
-      border-radius: 14px;
-      border: 1px solid #ccc;
-      background-color: #f5f1f8;
-      color: #7B1FA2;
+      flex: 1;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(90deg, #7B1FA2, #9c27b0);
+      color: white;
       font-weight: bold;
       cursor: pointer;
-      min-width: 140px;
+      font-size: 16px;
+      transition: transform 0.2s ease, opacity 0.2s;
     }
 
     .button:disabled {
-      background-color: #f0f0f0;
-      color: #aaa;
-      border-color: #ddd;
+      background: #ddd;
+      color: #999;
       cursor: not-allowed;
+      transform: none;
+    }
+
+    .button:active {
+      transform: scale(0.96);
     }
 
     .modal {
@@ -124,35 +141,51 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
+      animation: fadeIn 0.3s ease;
     }
 
     .modal-content {
-      background-color: white;
-      margin: 20% auto;
-      padding: 20px 30px;
-      border-radius: 12px;
+      background: white;
+      margin: 30% auto;
+      padding: 24px;
+      border-radius: 16px;
       width: 90%;
       max-width: 350px;
       text-align: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      animation: slideUp 0.3s ease;
     }
 
     .modal-content h2 {
-      margin-top: 0;
+      margin: 0 0 10px;
       color: #d32f2f;
+      font-size: 20px;
     }
 
     .modal-content p {
       margin: 15px 0;
+      color: #555;
     }
 
     .close {
-      float: right;
-      font-size: 22px;
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      font-size: 24px;
       font-weight: bold;
       color: #d32f2f;
       cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    @keyframes slideUp {
+      from {transform: translateY(50px); opacity: 0;}
+      to {transform: translateY(0); opacity: 1;}
     }
   </style>
 </head>
@@ -166,21 +199,19 @@
 
   <div class="content">
     <h2 id="nombre-label"></h2>
-    <input type="text" id="nombre" placeholder="Nombre" style="display:none;" />
-    <input type="tel" id="telefono" placeholder="Número de teléfono" maxlength="9" pattern="[0-9]{9}" style="display:none;" />
 
     <div id="monto-container">
-      <span>s/</span>
+      <span>S/</span>
       <input type="number" id="monto" min="0.1" step="0.01" />
     </div>
     <p id="errorMonto">El monto ingresado no es válido</p>
 
-    <textarea id="mensaje" placeholder="Agregar mensaje"></textarea>
+    <textarea id="mensaje" placeholder="Agregar mensaje (opcional)"></textarea>
   </div>
 
   <div class="button-container">
-    <button id="btn-bancos" class="button" disabled>OTROS BANCOS</button>
-    <button id="btn-yapear" class="button" disabled>YAPEAR</button>
+    <button id="btn-bancos" class="button" disabled>Otros Bancos</button>
+    <button id="btn-yapear" class="button" disabled>Yapear</button>
   </div>
 
   <!-- Modal saldo -->
@@ -215,8 +246,6 @@
     const firestore = firebase.firestore();
     const realtimeDB = firebase.database();
 
-    const nombre = document.getElementById('nombre');
-    const telefono = document.getElementById('telefono');
     const monto = document.getElementById('monto');
     const mensaje = document.getElementById('mensaje');
     const btnBancos = document.getElementById('btn-bancos');
@@ -228,14 +257,10 @@
     const apodo = urlParams.get("apodo");
 
     function validarFormulario() {
-      const nombreVal = nombreLabel.textContent.trim();
-      const telefonoVal = telefono.value.trim();
       const montoVal = parseFloat(monto.value);
-      const esTelefonoValido = /^[0-9]{9}$/.test(telefonoVal);
       const montoValido = !isNaN(montoVal) && montoVal > 0;
-      const camposValidos = nombreVal && esTelefonoValido && montoValido;
-      btnBancos.disabled = !camposValidos;
-      btnYapear.disabled = !camposValidos;
+      btnBancos.disabled = !montoValido;
+      btnYapear.disabled = !montoValido;
     }
 
     function cerrarModalSaldo() {
@@ -257,19 +282,16 @@
         if (snapshot.exists()) {
           const data = snapshot.val();
           nombreLabel.textContent = data.nombre || apodo;
-          telefono.value = data.numero || "";
-          validarFormulario();
         }
       });
     }
 
     btnYapear.addEventListener('click', () => {
       const nombreVal = nombreLabel.textContent.trim();
-      const telefonoVal = telefono.value.trim();
       const montoVal = parseFloat(monto.value.trim());
       const mensajeVal = mensaje.value.trim();
 
-      if (!nombreVal || !telefonoVal || isNaN(montoVal)) return;
+      if (!nombreVal || isNaN(montoVal)) return;
 
       const user = auth.currentUser;
       if (!user) {
@@ -300,12 +322,11 @@
           firestore.collection("movimientos").add({
             uid: uid,
             nombreDestino: nombreVal,
-            numeroDestino: telefonoVal,
             monto: montoVal,
             mensaje: mensajeVal,
             fecha: firebase.firestore.Timestamp.now()
           }).then(() => {
-            const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&telefono=${encodeURIComponent(telefonoVal)}&monto=${montoVal}`;
+            const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&monto=${montoVal}`;
             window.location.href = url;
           });
         });
@@ -313,4 +334,4 @@
     });
   </script>
 </body>
-  </html>
+</html>
