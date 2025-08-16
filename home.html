@@ -12,15 +12,18 @@
     :root {
       --morado: #720e9e;
       --verde: #00c6a2;
+      --gradiente: linear-gradient(135deg, #720e9e, #00c6a2);
     }
 
     body {
       margin: 0;
-      font-family: sans-serif;
+      font-family: "Segoe UI", sans-serif;
       background-color: var(--morado);
       color: white;
+      overflow-x: hidden;
     }
 
+    /* HEADER */
     .header {
       padding: 1rem;
       display: flex;
@@ -32,27 +35,35 @@
       text-decoration: none;
       color: white;
       font-size: 1.1rem;
+      font-weight: 600;
     }
 
     .gratis-label {
       background:#ffd700;
       color:black;
-      border-radius:5px;
-      padding:2px 5px;
+      border-radius:10px;
+      padding:2px 8px;
       font-size:0.7rem;
       margin-left: 0.5rem;
+      font-weight: bold;
     }
 
     .icons {
       display: flex;
       gap: 1rem;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
     }
 
     .icons i {
       color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .icons i:hover {
+      transform: scale(1.2);
     }
 
+    /* GRID DE ACCESOS */
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -63,32 +74,39 @@
     .icon-btn {
       background-color: white;
       color: #000;
-      border-radius: 15px;
+      border-radius: 20px;
       padding: 1rem 0.5rem;
       text-align: center;
       font-size: 0.75rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+    .icon-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     }
 
     .icon-btn i {
-      font-size: 1.5rem;
-      margin-bottom: 0.3rem;
+      font-size: 1.6rem;
+      margin-bottom: 0.4rem;
       display: block;
       color: var(--morado);
     }
 
+    /* CAROUSEL */
     .carousel {
       width: 100%;
       overflow: hidden;
       display: flex;
       justify-content: center;
-      align-items: center;
-      margin: 0 auto;
+      margin-top: .5rem;
     }
 
     .slides {
       display: flex;
       width: 300%;
-      transition: transform 1.2s ease-in-out;
+      transition: transform 1s ease-in-out;
     }
 
     .slide {
@@ -99,18 +117,18 @@
     }
 
     .slide img {
-      width: 90%;
+      width: 92%;
       max-width: 750px;
       height: auto;
       max-height: 180px;
       border-radius: 20px;
       object-fit: cover;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
     }
 
     .dots {
       text-align: center;
-      margin-top: 0.5rem;
+      margin: 0.5rem 0 1rem;
     }
 
     .dot {
@@ -120,14 +138,15 @@
       margin: 0 5px;
       background-color: #ccc;
       border-radius: 50%;
+      transition: all 0.3s ease;
     }
 
     .dot.active {
-      background-color: var(--morado);
-      width: 12px;
-      height: 12px;
+      background-color: var(--verde);
+      transform: scale(1.2);
     }
 
+    /* ACTIONS */
     .actions {
       display: flex;
       flex-direction: column;
@@ -145,19 +164,44 @@
       justify-content: space-between;
       align-items: center;
       font-weight: bold;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
       cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    .saldo-animado {
+      transition: opacity 0.3s ease;
     }
 
     .dropdown-content {
       margin-top: 0.5rem;
       padding: 0.5rem 1rem;
       background: #f7f7f7;
-      border-radius: 10px;
+      border-radius: 12px;
       color: black;
       display: none;
     }
 
+    .movimiento {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+    }
+    .movimiento strong {
+      color: #333;
+    }
+    .movimiento small {
+      color: #888;
+    }
+    .monto {
+      float:right;
+      color:#e53935;
+      font-weight: bold;
+    }
+
+    /* FOOTER */
     .footer {
       position: fixed;
       bottom: 0;
@@ -165,15 +209,15 @@
       background: white;
       display: flex;
       justify-content: space-evenly;
-      padding: 1rem 0;
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      padding: 0.7rem 0;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
     }
 
     .footer a, .footer button {
-      background-color: white;
-      color: var(--verde);
-      border: 2px solid var(--verde);
-      padding: 0.9rem 1.8rem;
+      background: var(--gradiente);
+      color: white;
+      border: none;
+      padding: 0.9rem 1.5rem;
       border-radius: 15px;
       font-weight: bold;
       font-size: 0.95rem;
@@ -181,6 +225,12 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+    .footer a:hover, .footer button:hover {
+      transform: scale(1.05);
     }
   </style>
 </head>
@@ -210,44 +260,48 @@
     <div class="icon-btn"><i class="fas fa-gamepad"></i>Gaming</div>
     <div class="icon-btn"><i class="fas fa-plus-circle"></i>Ver todo</div>
   </div>
-  </div>  <div class="carousel">
+
+  <!-- CAROUSEL -->
+  <div class="carousel">
     <div class="slides" id="slide-container">
       <div class="slide"><img src="imagen/1.jpg"></div>
       <div class="slide"><img src="imagen/2.jpg"></div>
       <div class="slide"><img src="imagen/3.jpg"></div>
     </div>
-  </div>  <div class="dots">
+  </div>
+  <div class="dots">
     <span class="dot active"></span>
-      <span class="dot"></span>
     <span class="dot"></span>
     <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    </div>
+  </div>
+
+  <!-- ACCIONES -->
   <div class="actions">
     <div class="card" onclick="mostrarSaldo()">
-      <span><i class="fas fa-eye"></i>Mostrar saldo</span>
-      <span id="saldo-valor"></span>
+      <span><i class="fas fa-eye"></i> Mostrar saldo</span>
+      <span id="saldo-valor" class="saldo-animado"></span>
     </div>
 
     <div class="card" onclick="toggleDropdown()">
-      <span><i class="fas fa-eye"></i>Mostrar movimientos</span>
+      <span><i class="fas fa-list"></i> Movimientos</span>
       <i class="fas fa-chevron-down"></i>
     </div>
     <div class="dropdown-content" id="dropdown">
-      <div id="movimientos-container" style="background: #fff; border-radius: 12px; padding: 1rem; color: #000;">
+      <div id="movimientos-container">
         <div style="text-align:center; color:#888;">Cargando movimientos...</div>
       </div>
     </div>
   </div>
 
+  <!-- FOOTER -->
   <div class="footer">
     <button onclick="window.location.href='QR.html'">
-  <i class="fas fa-qrcode"></i> ESCANEAR QR
+      <i class="fas fa-qrcode"></i> ESCANEAR QR
     </button>
-    <a href="yapear.html"><i class="fas fa-qrcode"></i> YAPEAR</a>
+    <a href="yapear.html"><i class="fas fa-exchange-alt"></i> YAPEAR</a>
   </div>
 
+  <!-- FIREBASE + JS -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
@@ -255,15 +309,14 @@
 
     const firebaseConfig = {
       apiKey: "AIzaSyBSyh8lBO7s-q_rauyv8UjnKOL-o055tNk",
-    authDomain: "yape-7c2d8.firebaseapp.com",
-    databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
-    projectId: "yape-7c2d8",
-    storageBucket: "yape-7c2d8.firebasestorage.app",
-    messagingSenderId: "906697506917",
-    appId: "1:906697506917:web:39812c83dd9d4b1987468c",
-    measurementId: "G-F4G428F4GZ"
-  };
-
+      authDomain: "yape-7c2d8.firebaseapp.com",
+      databaseURL: "https://yape-7c2d8-default-rtdb.firebaseio.com",
+      projectId: "yape-7c2d8",
+      storageBucket: "yape-7c2d8.firebasestorage.app",
+      messagingSenderId: "906697506917",
+      appId: "1:906697506917:web:39812c83dd9d4b1987468c",
+      measurementId: "G-F4G428F4GZ"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -294,7 +347,11 @@
 
     window.mostrarSaldo = function() {
       const saldo = document.getElementById("saldo-valor");
-      saldo.style.display = saldo.style.display === "none" ? "inline-block" : "none";
+      if (saldo.style.opacity === "0") {
+        saldo.style.opacity = "1";
+      } else {
+        saldo.style.opacity = "0";
+      }
     }
 
     async function cargarMovimientos(uid) {
@@ -319,9 +376,14 @@
             horaTexto = fecha.toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit" });
           }
 
-          html += `<div style='border-bottom:1px solid #eee; padding:10px 0;'><strong>${nombre}</strong><span style='float:right; color:#e53935;'>- S/ ${monto}</span><br><small style='color:#888;'>${fechaTexto} ${horaTexto}</small></div>`;
+          html += `
+            <div class="movimiento">
+              <strong>${nombre}</strong>
+              <span class="monto">- S/ ${monto}</span>
+              <br><small>${fechaTexto} ${horaTexto}</small>
+            </div>`;
         });
-        html += `<div style='text-align:center; color:#00c6a2; font-weight:bold; margin-top:10px;'>VER TODOS</div>`;
+        html += `<div style='text-align:center; color:var(--verde); font-weight:bold; margin-top:10px;'>VER TODOS</div>`;
       }
       contenedor.innerHTML = html;
     }
@@ -338,5 +400,4 @@
     }, 5000);
   </script>
 </body>
-</html>
-j
+      </html>
