@@ -48,11 +48,25 @@
       color: #333;
     }
 
-    #monto-label {
+    #monto-container {
       font-size: 42px;
       color: #720e9e;
       font-weight: bold;
       margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    #monto {
+      font-size: 42px;
+      border: none;
+      outline: none;
+      width: 120px;
+      color: #720e9e;
+      font-weight: bold;
+      text-align: left;
     }
 
     #limite-text {
@@ -61,9 +75,19 @@
       margin-bottom: 30px;
     }
 
-    #mensaje-placeholder {
+    #mensaje {
       margin-top: 40px;
       font-size: 16px;
+      color: #333;
+      border: none;
+      border-bottom: 1px solid #ccc;
+      width: 100%;
+      text-align: center;
+      outline: none;
+      padding: 6px;
+    }
+
+    #mensaje::placeholder {
       color: #aaa;
     }
 
@@ -127,9 +151,15 @@
 
   <div class="content">
     <div id="nombre-label">Cargando...</div>
-    <div id="monto-label">S/ 0.00</div>
+
+    <div id="monto-container">
+      <span>S/</span>
+      <input type="number" id="monto" placeholder="0.00" step="0.01" min="0.1" />
+    </div>
+
     <div id="limite-text">Límite por yapeo S/ 500, límite total por día S/ 950</div>
-    <div id="mensaje-placeholder">Agregar mensaje</div>
+
+    <input type="text" id="mensaje" placeholder="Agregar mensaje" />
   </div>
 
   <div class="button-container">
@@ -170,17 +200,12 @@
     const realtimeDB = firebase.database();
 
     const nombreLabel = document.getElementById('nombre-label');
-    const montoLabel = document.getElementById('monto-label');
+    const montoInput = document.getElementById('monto');
+    const mensajeInput = document.getElementById('mensaje');
 
-    // Tomar params de la URL (ejemplo: ?apodo=luz& monto=15)
+    // Tomar params de la URL (?apodo=luz)
     const urlParams = new URLSearchParams(window.location.search);
     const apodo = urlParams.get("apodo");
-    const monto = urlParams.get("monto");
-
-    // Mostrar monto si viene en URL
-    if(monto){
-      montoLabel.textContent = `S/ ${monto}`;
-    }
 
     // Autocompletar nombre desde Firebase
     if (apodo) {
@@ -205,7 +230,13 @@
     // Acción Yapear
     document.getElementById('btn-yapear').addEventListener('click', () => {
       const nombreVal = nombreLabel.textContent.trim();
-      const montoVal = parseFloat(monto);
+      const montoVal = parseFloat(montoInput.value);
+      const mensajeVal = mensajeInput.value.trim();
+
+      if (!montoVal || montoVal <= 0) {
+        alert("Ingresa un monto válido");
+        return;
+      }
 
       const user = auth.currentUser;
       if (!user) {
@@ -237,9 +268,10 @@
             uid: uid,
             nombreDestino: nombreVal,
             monto: montoVal,
+            mensaje: mensajeVal,
             fecha: firebase.firestore.Timestamp.now()
           }).then(() => {
-            const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&monto=${montoVal}`;
+            const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&monto=${montoVal}&mensaje=${encodeURIComponent(mensajeVal)}`;
             window.location.href = url;
           });
         });
@@ -247,4 +279,4 @@
     });
   </script>
 </body>
-</html>
+  </html>
