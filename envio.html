@@ -266,6 +266,7 @@
       const nombreVal = nombreLabel.textContent.trim();
       const montoVal = parseFloat(montoInput.value.trim());
       const mensajeVal = mensaje.value.trim();
+      const telefonoVal = numeroLabel.textContent.trim();
 
       if (!nombreVal || isNaN(montoVal)) return;
 
@@ -302,8 +303,10 @@
             mensaje: mensajeVal,
             fecha: firebase.firestore.Timestamp.now()
           }).then(() => {
-            const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&telefono=${encodeURIComponent(numeroLabel.textContent)}&monto=${montoVal}`;
-window.location.href = url;
+            // ✅ Ahora pasamos también el teléfono
+            const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&telefono=${encodeURIComponent(telefonoVal)}&monto=${montoVal}`;
+            window.location.href = url;
+          });
         });
       });
     });
