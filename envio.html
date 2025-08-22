@@ -302,7 +302,7 @@
             mensaje: mensajeVal,
             fecha: firebase.firestore.Timestamp.now()
           }).then(() => {
-            const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&monto=${montoVal}`;
+            const url = `comprobante.html?nombre=${encodeURIComponent(nombre)}&telefono=${encodeURIComponent(telefono)}&monto=${encodeURIComponent(monto)}`;
             window.location.href = url;
           });
         });
