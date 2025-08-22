@@ -5,11 +5,8 @@
   <title>Comprobante Yape</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <!-- Font Awesome para íconos -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
- <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#720e9e" />
-  <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png">
   <style>
     body {
       margin: 0;
@@ -76,13 +73,23 @@
       color: #666;
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 10px;
       margin-bottom: 10px;
       justify-content: flex-start;
     }
 
     .datos i {
-      margin-right: 5px;
+      font-weight: normal;
+      color: #666;
+    }
+
+    .datos span {
+      font-weight: bold;
+    }
+
+    .separator {
+      color: #aaa;
+      font-weight: normal;
     }
 
     .share {
@@ -119,7 +126,6 @@
     .info {
       font-size: 13px;
       color: gray;
-      border-top: 1px solid #eee;
       padding-top: 10px;
     }
 
@@ -127,6 +133,11 @@
       margin: 5px 0;
       display: flex;
       justify-content: space-between;
+    }
+
+    .info p strong {
+      font-weight: bold;
+      color: #000;
     }
 
     .info p span {
@@ -138,6 +149,17 @@
       width: 100%;
       border-radius: 15px;
       margin-top: 20px;
+    }
+
+    .icono-seguridad {
+      width: 20px;
+      height: 20px;
+    }
+
+    .label-seguridad {
+      font-size: 13px; 
+      color: gray; 
+      font-weight: bold;
     }
   </style>
 </head>
@@ -158,23 +180,20 @@
       <div class="monto" id="monto">S/ --</div>
       <div class="nombre" id="nombre">Nombre</div>
 
+      <!-- Fecha y hora -->
       <div class="datos">
-        <span id="fecha"><i class="far fa-calendar-alt"></i> --</span>
-        <span id="hora"><i class="far fa-clock"></i> --</span>
+        <span id="fecha"><i class="far fa-calendar-alt"></i> <span></span></span>
+        <span class="separator">|</span>
+        <span id="hora"><i class="far fa-clock"></i> <span></span></span>
       </div>
 
-      <!-- CÓDIGO DE SEGURIDAD en una sola línea -->
+      <!-- Código de seguridad -->
       <div style="margin: 20px 0; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 15px 0;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <!-- Texto + ? -->
           <div style="display: flex; align-items: center; gap: 5px;">
-            <span style="font-size: 13px; color: gray; font-weight: 500;">CÓDIGO DE SEGURIDAD</span>
-            <div style="width: 20px; height: 20px; background-color: white; border-radius: 50%; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #666; font-weight: bold;">
-              ?
-            </div>
+            <span class="label-seguridad">CÓDIGO DE SEGURIDAD</span>
+            <img src="imagen/sello.jpg" alt="icono seguridad" class="icono-seguridad">
           </div>
-
-          <!-- Cuadros del código -->
           <div style="display: flex; gap: 8px; margin-left: auto;" id="codigo-seguridad">
             <div class="caja">-</div>
             <div class="caja">-</div>
@@ -183,12 +202,12 @@
         </div>
       </div>
 
-      <div class="transaccion-title">Datos de la transacción</div>
+      <div class="transaccion-title">DATOS DE LA TRANSACCIÓN</div>
 
       <div class="info">
-        <p>Nro. de celular <span id="telefono">*********</span></p>
-        <p>Destino <span>Yape</span></p>
-        <p>Nro. de operación <span id="operacion">---</span></p>
+        <p><strong>Nro. de celular</strong> <span id="telefono">*********</span></p>
+        <p><strong>Destino</strong> <span>Yape</span></p>
+        <p><strong>Nro. de operación</strong> <span id="operacion">---</span></p>
       </div>
     </div>
 
@@ -196,50 +215,38 @@
   </div>
 
   <script>
-    // Obtener parámetros
     const params = new URLSearchParams(window.location.search);
     const nombre = decodeURIComponent(params.get("nombre") || "Sin nombre");
     const telefono = decodeURIComponent(params.get("telefono") || "000000000");
     const monto = decodeURIComponent(params.get("monto") || "0.00");
 
-    // Asignar datos
     document.getElementById("nombre").textContent = nombre;
     document.getElementById("monto").textContent = `S/ ${parseFloat(monto).toFixed(2)}`;
     const ultimosDigitos = telefono.slice(-3);
     document.getElementById("telefono").textContent = `*** ***${ultimosDigitos}`;
 
-    // Fecha y hora
     const fechaObj = new Date();
     const opcionesFecha = { day: '2-digit', month: 'short', year: 'numeric' };
     const opcionesHora = { hour: '2-digit', minute: '2-digit', hour12: true };
 
-    document.getElementById("fecha").innerHTML = `<i class="far fa-calendar-alt"></i> ${fechaObj.toLocaleDateString('es-PE', opcionesFecha)}`;
-    document.getElementById("hora").innerHTML = `<i class="far fa-clock"></i> ${fechaObj.toLocaleTimeString('es-PE', opcionesHora)}`;
+    document.querySelector("#fecha span").textContent = fechaObj.toLocaleDateString('es-PE', opcionesFecha);
+    document.querySelector("#hora span").textContent = fechaObj.toLocaleTimeString('es-PE', opcionesHora);
 
-    // Código de seguridad aleatorio
     const codigo = Math.floor(Math.random() * 900 + 100).toString();
     const cajas = document.getElementById("codigo-seguridad").children;
     for (let i = 0; i < 3; i++) {
       cajas[i].textContent = codigo[i];
     }
 
-    // Nro de operación aleatorio
     document.getElementById("operacion").textContent = Math.floor(10000000 + Math.random() * 90000000);
 
-    // Imagen de promoción aleatoria
     const promociones = [
-      "imagen/1.jpg",
-      "imagen/2.jpg",
-      "imagen/3.jpg",
-      "imagen/4.jpg",
-      "imagen/5.jpg"
+      "imagen/1.jpg","imagen/2.jpg","imagen/3.jpg","imagen/4.jpg","imagen/5.jpg"
     ];
-    const promoSeleccionada = promociones[Math.floor(Math.random() * promociones.length)];
-    document.getElementById("promo-img").src = promoSeleccionada;
+    document.getElementById("promo-img").src = promociones[Math.floor(Math.random() * promociones.length)];
 
-    // Compartir comprobante
     async function compartir() {
-      const imageUrl = "https://i.imgur.com/2SG2kXr.png"; // cambia si quieres una imagen real
+      const imageUrl = "https://i.imgur.com/2SG2kXr.png";
       try {
         const response = await fetch(imageUrl);
         const blob = await response.blob();
