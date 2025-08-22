@@ -1,95 +1,316 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Enviar Yape</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yapear</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f5f5f5;
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #333;
     }
-    .container {
-      max-width: 400px;
-      margin: auto;
-      padding: 20px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-      margin-top: 30px;
-    }
-    h2 {
-      text-align: center;
-      color: #650D89;
-      margin-bottom: 20px;
-    }
-    label {
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: #fff;
+      color: #6a1b9a;
       font-weight: bold;
-      font-size: 14px;
-      display: block;
-      margin: 10px 0 5px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-bottom: 10px;
       font-size: 16px;
     }
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #650D89;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 10px;
+    header span {
       cursor: pointer;
-      font-weight: bold;
+      font-size: 20px;
     }
-    button:hover {
-      background-color: #520a70;
+    .header-title {
+      flex: 1;
+      text-align: center;
+      font-weight: normal;
+      font-size: 16px;
+      margin-left: -20px;
+    }
+
+    /* Nombre y número */
+    #nombre-label {
+      margin-top: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      color: #333;
+    }
+    #numero-label {
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      margin-top: 3px;
+    }
+
+    /* Monto */
+    .monto {
+      text-align: center;
+      font-size: 48px;
+      font-weight: bold;
+      color: #7B1FA2;
+      margin: 20px 0 5px;
+    }
+    .monto input {
+      border: none;
+      outline: none;
+      font-size: 48px;
+      font-weight: bold;
+      text-align: center;
+      color: #7B1FA2;
+      width: 120px;
+    }
+    .limite {
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 30px;
+    }
+
+    /* Mensaje */
+    textarea {
+      width: 100%;
+      border: none;
+      border-top: 1px solid #eee;
+      padding: 15px;
+      font-size: 16px;
+      text-align: center;
+      color: #555;
+      resize: none;
+    }
+    textarea::placeholder {
+      color: #aaa;
+    }
+
+    /* Botones */
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 20px;
+      background: #fff;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-bancos {
+      border: 1px solid #999;
+      background: #fff;
+      color: #555;
+    }
+    .btn-yapear {
+      background: #00c58e;
+      border: none;
+      color: white;
+    }
+
+    /* Error monto */
+    #errorMonto {
+      text-align: center;
+      color: #e53935;
+      font-size: 14px;
+      display: none;
+      margin-top: 5px;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+    }
+    .modal-content {
+      background: white;
+      margin: 30% auto;
+      padding: 24px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 350px;
+      text-align: center;
+    }
+    .modal-content h2 {
+      margin: 0 0 10px;
+      color: #d32f2f;
+      font-size: 20px;
+    }
+    .modal-content p {
+      margin: 15px 0;
+      color: #555;
+    }
+    .close {
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #d32f2f;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Enviar Yape</h2>
+  <!-- Header -->
+  <header>
+    <span onclick="history.back()">←</span>
+    <span class="header-title">Yapear a</span>
+    <span onclick="history.back()">x</span>
+  </header>
 
-    <label for="nombre">Nombre</label>
-    <input id="nombre" type="text" placeholder="Ingresa nombre">
+  <!-- Contenido -->
+  <div id="nombre-label">Cargando...</div>
+  <div id="numero-label"></div>
 
-    <label for="telefono">Teléfono</label>
-    <input id="telefono" type="tel" placeholder="Ingresa teléfono">
+  <div class="monto">
+    S/ <input type="number" id="monto" min="0.1" step="0.01" value="0">
+  </div>
+  <div class="limite">Límite por yapeo S/ 500, límite total por día S/ 950</div>
 
-    <label for="monto">Monto (S/)</label>
-    <input id="monto" type="number" placeholder="0.00">
+  <p id="errorMonto">El monto ingresado no es válido</p>
+  <textarea id="mensaje" placeholder="Agregar mensaje"></textarea>
 
-    <label for="mensaje">Mensaje</label>
-    <input id="mensaje" type="text" placeholder="Escribe un mensaje">
-
-    <button id="btnYapear">Yapear</button>
+  <!-- Botones -->
+  <div class="button-container">
+    <button id="btn-bancos" class="btn btn-bancos" disabled>OTROS BANCOS</button>
+    <button id="btn-yapear" class="btn btn-yapear" disabled>YAPEAR</button>
   </div>
 
+  <!-- Modal -->
+  <div id="modalSaldo" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModalSaldo()">&times;</span>
+      <h2>Saldo insuficiente</h2>
+      <p>No cuentas con saldo suficiente para yapear.</p>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
   <script>
-    const btnYapear = document.getElementById("btnYapear");
+    const firebaseConfig = {
+      apiKey: "AIzaSyCHzOEwhFHQo9boQjRLLu18XJNFKXQU06A",
+      authDomain: "yape-5f8d6.firebaseapp.com",
+      projectId: "yape-5f8d6",
+      storageBucket: "yape-5f8d6.firebasestorage.app",
+      messagingSenderId: "609053449523",
+      appId: "1:609053449523:web:80a334f896f2fba834b246",
+      measurementId: "G-TNYNH4G14G"
+    };
 
-    btnYapear.addEventListener("click", () => {
-      const nombreVal   = document.getElementById("nombre").value.trim();
-      const montoVal    = document.getElementById("monto").value.trim();
-      const mensajeVal  = document.getElementById("mensaje").value.trim();
-      const telefonoVal = document.getElementById("telefono").value.trim();
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const firestore = firebase.firestore();
+    const realtimeDB = firebase.database();
 
-      if (!nombreVal || !montoVal || !telefonoVal) {
-        alert("Completa nombre, teléfono y monto antes de yapear");
+    const montoInput = document.getElementById('monto');
+    const mensaje = document.getElementById('mensaje');
+    const btnBancos = document.getElementById('btn-bancos');
+    const btnYapear = document.getElementById('btn-yapear');
+    const errorMonto = document.getElementById('errorMonto');
+    const nombreLabel = document.getElementById('nombre-label');
+    const numeroLabel = document.getElementById('numero-label');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const apodo = urlParams.get("apodo");
+
+    function cerrarModalSaldo() {
+      document.getElementById("modalSaldo").style.display = "none";
+    }
+    function mostrarModalSaldo() {
+      document.getElementById("modalSaldo").style.display = "block";
+    }
+
+    // Autocompletar nombre y número desde Firebase
+    if (apodo) {
+      realtimeDB.ref("contactos/" + apodo).once("value").then(snapshot => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          nombreLabel.textContent = data.nombre || apodo;
+          numeroLabel.textContent = data.numero || "";
+        }
+      });
+    }
+
+    // Validar monto
+    montoInput.addEventListener('input', () => {
+      const valor = parseFloat(montoInput.value);
+      const valido = !isNaN(valor) && valor > 0;
+      errorMonto.style.display = valido ? "none" : "block";
+      btnBancos.disabled = !valido;
+      btnYapear.disabled = !valido;
+    });
+
+    // Acción Yapear
+    btnYapear.addEventListener('click', () => {
+      const nombreVal = nombreLabel.textContent.trim();
+      const montoVal = parseFloat(montoInput.value.trim());
+      const mensajeVal = mensaje.value.trim();
+
+      if (!nombreVal || isNaN(montoVal)) return;
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert("No hay usuario autenticado");
         return;
       }
 
-      // 🔗 Redirige al comprobante con todos los datos
-      const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&monto=${encodeURIComponent(montoVal)}&mensaje=${encodeURIComponent(mensajeVal)}&telefono=${encodeURIComponent(telefonoVal)}`;
-      window.location.href = url;
+      const uid = user.uid;
+      const userDoc = firestore.collection("usuarios").doc(uid);
+
+      userDoc.get().then(doc => {
+        if (!doc.exists) {
+          mostrarModalSaldo();
+          return;
+        }
+
+        const data = doc.data();
+        const saldoActual = parseFloat(data.monto);
+
+        if (isNaN(saldoActual) || saldoActual < montoVal) {
+          mostrarModalSaldo();
+          return;
+        }
+
+        userDoc.update({
+          monto: (saldoActual - montoVal).toFixed(2)
+        }).then(() => {
+          firestore.collection("movimientos").add({
+            uid: uid,
+            nombreDestino: nombreVal,
+            monto: montoVal,
+            mensaje: mensajeVal,
+            fecha: firebase.firestore.Timestamp.now()
+          }).then(() => {
+            const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&monto=${montoVal}`;
+            window.location.href = url;
+          });
+        });
+      });
+    });
+  </script>
+</body>
+  </html>      window.location.href = url;
     });
   </script>
 </body>
