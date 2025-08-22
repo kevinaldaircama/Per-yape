@@ -228,55 +228,21 @@
     }
 
     // Acción Yapear
-    document.getElementById('btn-yapear').addEventListener('click', () => {
-      const nombreVal = nombreLabel.textContent.trim();
-      const montoVal = parseFloat(montoInput.value);
-      const mensajeVal = mensajeInput.value.trim();
+    document.getElementById('btnYapear.addEventListener("click", () => {
+  const nombreVal   = document.getElementById("nombre").value.trim();
+  const montoVal    = document.getElementById("monto").value.trim();
+  const mensajeVal  = document.getElementById("mensaje").value.trim();
+  const telefonoVal = document.getElementById("telefono").value.trim();
 
-      if (!montoVal || montoVal <= 0) {
-        alert("Ingresa un monto válido");
-        return;
-      }
+  if (!nombreVal || !montoVal || !telefonoVal) {
+    alert("Completa nombre, teléfono y monto antes de yapear");
+    return;
+  }
 
-      const user = auth.currentUser;
-      if (!user) {
-        alert("No hay usuario autenticado");
-        return;
-      }
-
-      const uid = user.uid;
-      const userDoc = firestore.collection("usuarios").doc(uid);
-
-      userDoc.get().then(doc => {
-        if (!doc.exists) {
-          mostrarModalSaldo();
-          return;
-        }
-
-        const data = doc.data();
-        const saldoActual = parseFloat(data.monto);
-
-        if (isNaN(saldoActual) || saldoActual < montoVal) {
-          mostrarModalSaldo();
-          return;
-        }
-
-        userDoc.update({
-          monto: (saldoActual - montoVal).toFixed(2)
-        }).then(() => {
-          firestore.collection("movimientos").add({
-            uid: uid,
-            nombreDestino: nombreVal,
-            monto: montoVal,
-            mensaje: mensajeVal,
-            fecha: firebase.firestore.Timestamp.now()
-          }).then(() => {
-            const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&monto=${montoVal}&mensaje=${encodeURIComponent(mensajeVal)}`;
-            window.location.href = url;
-          });
-        });
-      });
-    });
+  // 🔗 Redirige al comprobante con todos los datos
+  const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&monto=${encodeURIComponent(montoVal)}&mensaje=${encodeURIComponent(mensajeVal)}&telefono=${encodeURIComponent(telefonoVal)}`;
+  window.location.href = url;
+});
   </script>
 </body>
   </html>
