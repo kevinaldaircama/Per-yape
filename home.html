@@ -213,24 +213,37 @@
       box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
     }
 
-    .footer a, .footer button {
-      background: var(--gradiente);
-      color: white;
+    .footer button,
+    .footer a {
       border: none;
       padding: 0.9rem 1.5rem;
-      border-radius: 15px;
+      border-radius: 50px; /* redondeado tipo Yape */
       font-weight: bold;
-      font-size: 0.95rem;
+      font-size: 1rem;
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.25);
       transition: transform 0.2s ease;
       cursor: pointer;
     }
-    .footer a:hover, .footer button:hover {
-      transform: scale(1.05);
+
+    /* Botón ESCANEAR QR (verde) */
+    .footer button {
+      background: #00c6a2;
+      color: white;
+    }
+
+    /* Botón YAPEAR (morado) */
+    .footer a {
+      background: #720e9e;
+      color: white;
+    }
+
+    .footer button:hover,
+    .footer a:hover {
+      transform: scale(1.07);
     }
   </style>
 </head>
@@ -309,13 +322,13 @@
 
     const firebaseConfig = {
       apiKey: "AIzaSyCHzOEwhFHQo9boQjRLLu18XJNFKXQU06A",
-    authDomain: "yape-5f8d6.firebaseapp.com",
-    projectId: "yape-5f8d6",
-    storageBucket: "yape-5f8d6.firebasestorage.app",
-    messagingSenderId: "609053449523",
-    appId: "1:609053449523:web:80a334f896f2fba834b246",
-    measurementId: "G-TNYNH4G14G"
-  };
+      authDomain: "yape-5f8d6.firebaseapp.com",
+      projectId: "yape-5f8d6",
+      storageBucket: "yape-5f8d6.firebasestorage.app",
+      messagingSenderId: "609053449523",
+      appId: "1:609053449523:web:80a334f896f2fba834b246",
+      measurementId: "G-TNYNH4G14G"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -399,4 +412,4 @@
     }, 5000);
   </script>
 </body>
-      </html>
+  </html>
