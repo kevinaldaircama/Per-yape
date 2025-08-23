@@ -82,18 +82,61 @@
     </form>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+
+    // 🔹 Configuración de Firebase (misma que en tu otro archivo)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCHzOEwhFHQo9boQjRLLu18XJNFKXQU06A",
+      authDomain: "yape-5f8d6.firebaseapp.com",
+      projectId: "yape-5f8d6",
+      storageBucket: "yape-5f8d6.firebasestorage.app",
+      messagingSenderId: "609053449523",
+      appId: "1:609053449523:web:80a334f896f2fba834b246",
+      measurementId: "G-TNYNH4G14G"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore();
+
     const form = document.getElementById("pinForm");
     const message = document.getElementById("message");
 
-    form.addEventListener("submit", function(event) {
+    let userUID = null;
+    let currentPin = null;
+
+    // 🔹 Obtener usuario y su PIN actual
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        userUID = user.uid;
+        const docRef = doc(db, "usuarios", userUID);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          currentPin = docSnap.data().pin;
+        }
+      } else {
+        message.textContent = "Debes iniciar sesión.";
+        message.className = "error";
+      }
+    });
+
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const oldPin = document.getElementById("oldPin").value.trim();
       const newPin = document.getElementById("newPin").value.trim();
       const confirmPin = document.getElementById("confirmPin").value.trim();
 
-      // Validaciones
+      // 🔹 Validaciones
+      if (oldPin !== currentPin) {
+        message.textContent = "El PIN actual no es correcto.";
+        message.className = "error";
+        return;
+      }
+
       if (newPin.length < 4 || newPin.length > 6) {
         message.textContent = "El nuevo PIN debe tener entre 4 y 6 dígitos.";
         message.className = "error";
@@ -124,8 +167,14 @@
         return;
       }
 
-      // ✅ Si pasa todas las validaciones, redirige a otra página
-      window.location.href = "exito.html"; 
+      // ✅ Guardar en Firebase y redirigir
+      try {
+        await updateDoc(doc(db, "usuarios", userUID), { pin: newPin });
+        window.location.href = "exito.html"; // Redirige si todo salió bien
+      } catch (error) {
+        message.textContent = "Error al guardar el PIN: " + error.message;
+        message.className = "error";
+      }
     });
   </script>
 </body>
