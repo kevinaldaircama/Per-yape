@@ -16,13 +16,25 @@
     }
 
     body {
-      margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background-color: var(--morado);
-      color: white;
-      overflow-x: hidden;
-    }
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--morado); /* Morado arriba */
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
+ .main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;   /* ✅ Blanco continuo hasta abajo */
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.1); /* Transición entre morado y blanco */
+}
     /* HEADER */
     .header {
       padding: 1rem;
@@ -71,27 +83,34 @@
       padding: 1rem;
     }
 
-    .icon-btn {
-      background-color: white;
-      color: #000;
-      border-radius: 20px;
-      padding: 1rem 0.5rem;
+   .icon-btn {
+      background: none;
+      color: white;
       text-align: center;
       font-size: 0.75rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
       cursor: pointer;
-    }
-    .icon-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease;
     }
 
-    .icon-btn i {
-      font-size: 1.6rem;
-      margin-bottom: 0.4rem;
+    .icon-btn:hover {
+      transform: scale(1.08);
+    }
+
+    .icon-btn img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: white;
+      padding: 10px;
+      object-fit: contain;
+      margin-bottom: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .icon-btn span {
       display: block;
-      color: var(--morado);
+      font-size: 0.75rem;
+      line-height: 1.1rem;
     }
 
     /* CAROUSEL */
@@ -146,25 +165,30 @@
       transform: scale(1.2);
     }
 
-    /* ACTIONS */
-    .actions {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin: 1rem;
-      margin-bottom: 110px;
-    }
-
+    /* ACCIONES */
+   .actions {
+  background: white;                /* ✅ Fondo blanco */
+  margin: 0;
+  padding: 1rem;
+  margin-bottom: 110px;
+  border-top-left-radius: 20px;     /* ✅ Bordes arriba redondeados */
+  border-top-right-radius: 20px;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.1); /* ✅ Transición morado/blanco */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+    /* Cada tarjeta en blanco como en la captura */
     .card {
-      background: white;
-      color: var(--morado);
-      border-radius: 20px;
+      background: white;               /* ✅ Fondo blanco */
+      color: var(--morado);            /* ✅ Texto e íconos morados */
+      border-radius: 12px;             /* ✅ Esquinas redondeadas */
       padding: 1rem 1.2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-weight: bold;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15); /* ✅ sombra */
       cursor: pointer;
       transition: transform 0.2s ease;
     }
@@ -179,10 +203,11 @@
     .dropdown-content {
       margin-top: 0.5rem;
       padding: 0.5rem 1rem;
-      background: #f7f7f7;
+      background: white;          /* ✅ ahora blanco también */
       border-radius: 12px;
       color: black;
       display: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
 
     .movimiento {
@@ -217,7 +242,7 @@
     .footer a {
       border: none;
       padding: 0.9rem 1.5rem;
-      border-radius: 50px; /* redondeado tipo Yape */
+      border-radius: 50px;
       font-weight: bold;
       font-size: 1rem;
       text-decoration: none;
@@ -259,20 +284,56 @@
     </div>
   </div>
 
-  <div class="grid">
-    <div class="icon-btn"><i class="fas fa-mobile-alt"></i>Recargar<br>celular</div>
-    <div class="icon-btn"><i class="fas fa-lightbulb"></i>Yapear<br>servicios</div>
-    <div class="icon-btn"><i class="fas fa-tags"></i>Promos</div>
-    <div class="icon-btn"><i class="fas fa-check-circle"></i>Aprobar<br>compras</div>
-    <div class="icon-btn"><i class="fas fa-hand-holding-usd"></i>Créditos</div>
-    <div class="icon-btn"><i class="fas fa-store"></i>Tienda <span style="color:red;font-weight:bold;">¡Cyber!</span></div>
-    <div class="icon-btn"><i class="fas fa-dollar-sign"></i>Dólares</div>
-    <div class="icon-btn"><i class="fas fa-globe"></i>Remesas</div>
-    <div class="icon-btn"><i class="fas fa-car-crash"></i>SOAT</div>
-    <div class="icon-btn"><i class="fas fa-bus"></i>Viajar en<br>bus</div>
-    <div class="icon-btn"><i class="fas fa-gamepad"></i>Gaming</div>
-    <div class="icon-btn"><i class="fas fa-plus-circle"></i>Ver todo</div>
-  </div>
+ <div class="grid">  
+  <div class="icon-btn">
+    <img src="imagen/recargas.png" alt="Recargar">
+    <span>Recargar<br>celular</span>
+  </div>  
+  <div class="icon-btn">
+    <img src="imagen/servicios.png" alt="Servicios">
+    <span>Yapear<br>servicios</span>
+  </div>  
+  <div class="icon-btn">
+    <img src="imagen/promos.png" alt="Promos">
+    <span>Promos</span>
+  </div>  
+  <div class="icon-btn">
+    <img src="imagen/aprobar.png" alt="Aprobar">
+    <span>Aprobar<br>compras</span>
+  </div>  
+  <div class="icon-btn">
+    <img src="imagen/creditos.png" alt="Créditos">
+    <span>Créditos</span>
+  </div>  
+  <div class="icon-btn">
+    <img src="imagen/tienda.png" alt="Tienda">
+    <span>Tienda</span>
+  </div>  
+  <div class="icon-btn">
+    <img src="imagen/dolares.png" alt="Dólares">
+    <span>Dólares</span>
+  </div>  
+  <div class="icon-btn">
+    <img src="imagen/remesas.png" alt="Remesas">
+    <span>Remesas</span>
+  </div>  
+  <div class="icon-btn">
+    <img src="imagen/soat.png" alt="SOAT">
+    <span>SOAT</span>
+  </div>  
+  <div class="icon-btn">
+    <img src="imagen/bus.png" alt="Bus">
+    <span>Viajar en<br>bus</span>
+  </div>  
+  <div class="icon-btn">
+    <img src="imagen/gaming.png" alt="Gaming">
+    <span>Gaming</span>
+  </div>  
+  <div class="icon-btn">
+    <img src="imagen/ver mas.png" alt="Ver todo">
+    <span>Ver todo</span>
+  </div>  
+</div>
 
   <!-- CAROUSEL -->
   <div class="carousel">
@@ -296,7 +357,7 @@
     </div>
 
     <div class="card" onclick="toggleDropdown()">
-      <span><i class="fas fa-list"></i> Movimientos</span>
+      <span><i class="fas fa-list"></i> Mostrar movimientos</span>
       <i class="fas fa-chevron-down"></i>
     </div>
     <div class="dropdown-content" id="dropdown">
