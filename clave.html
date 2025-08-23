@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alerta de Seguridad</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #6a1b9a; /* morado */
+      color: #333;
+    }
+
+    .container {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .back {
+      text-align: left;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .icon-box {
+      margin: 40px auto;
+      position: relative;
+    }
+
+    .lock {
+      font-size: 120px;
+      color: #ba68c8; /* morado claro */
+    }
+
+    .warning {
+      position: absolute;
+      right: 20%;
+      top: 10%;
+      font-size: 40px;
+      color: #ffeb3b;
+    }
+
+    .content {
+      background: #fff;
+      border-radius: 30px 30px 0 0;
+      padding: 30px 20px;
+      text-align: left;
+    }
+
+    .content h2 {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .info {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+
+    .info i {
+      font-size: 22px;
+      color: #6a1b9a;
+      margin-right: 10px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      background: #00bfa5; /* verde agua */
+      color: white;
+      border: none;
+      padding: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      background: #009688;
+    }
+  </style>
+  <!-- Importamos íconos de FontAwesome -->
+  <script src="https://kit.fontawesome.com/5a8e0b6c2d.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Flecha atrás -->
+    <div class="back"><i class="fas fa-arrow-left"></i></div>
+
+    <!-- Candado + Advertencia -->
+    <div class="icon-box">
+      <i class="fas fa-lock-open lock"></i>
+      <i class="fas fa-exclamation-triangle warning"></i>
+    </div>
+
+    <!-- Contenido -->
+    <div class="content">
+      <h2>Si tu clave es muy fácil, otros podrían adivinarla</h2>
+
+      <div class="info">
+        <i class="fas fa-shield-alt"></i>
+        <p>Una clave segura protege tu Yape ante un robo.</p>
+      </div>
+
+      <div class="info">
+        <i class="fas fa-lock"></i>
+        <p>Cambia tu clave, yapero.<br>¡Tu seguridad es lo primero!</p>
+      </div>
+
+      <button class="btn">CREAR NUEVA CLAVE</button>
+    </div>
+  </div>
+
+</body>
+</html>
