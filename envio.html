@@ -294,19 +294,13 @@
         }
 
         userDoc.update({
-          monto: (saldoActual - montoVal).toFixed(2)
-        }).then(() => {
-          firestore.collection("movimientos").add({
-            uid: uid,
-            nombreDestino: nombreVal,
-            monto: montoVal,
-            mensaje: mensajeVal,
-            fecha: firebase.firestore.Timestamp.now()
-          }).then(() => {
-            // ✅ Ahora pasamos también el teléfono
-            const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&telefono=${encodeURIComponent(telefonoVal)}&monto=${montoVal}`;
-            window.location.href = url;
-          });
+  monto: (saldoActual - montoVal).toFixed(2)
+}).catch(err => {
+  console.error("Error al actualizar saldo:", err);
+}).finally(() => {
+  // Redirigir aunque haya fallado Firestore
+  const url = `comprobante.html?nombre=${encodeURIComponent(nombreVal)}&telefono=${encodeURIComponent(telefonoVal)}&monto=${montoVal}`;
+  window.location.href = url;
         });
       });
     });
