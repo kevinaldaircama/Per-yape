@@ -1,123 +1,185 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alerta de Seguridad</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #6a1b9a; /* morado */
-      color: #333;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Alerta de seguridad</title>
+<style>
+  :root{
+    --purple:#6c2aa7;
+    --purple-dark:#501a86;
+    --purple-light:#c892ff;
+    --panel:#ffffff;
+    --accent:#11c5a2;
+    --warning:#f7c32e;
+    --text:#1f2230;
+    --muted:#5b5e6e;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
+    background: linear-gradient(180deg, var(--purple) 0%, var(--purple-dark) 45%, #fff 45%);
+    color:var(--text);
+  }
 
-    .container {
-      text-align: center;
-      padding: 20px;
-    }
+  /* Top bar (solo la flecha para parecer app) */
+  .topbar{
+    height:56px;
+    display:flex;
+    align-items:center;
+    padding:0 16px;
+    color:#fff;
+  }
+  .topbar .back{
+    width:36px;height:36px;border-radius:999px;
+    display:grid;place-items:center;cursor:pointer;
+  }
+  .topbar svg{fill:#fff}
 
-    .back {
-      text-align: left;
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-    }
+  .hero{
+    position:relative;
+    max-width:480px;
+    margin:0 auto;
+    padding:4px 20px 0;
+    height:240px;
+  }
 
-    .icon-box {
-      margin: 40px auto;
-      position: relative;
-    }
+  /* Panel contenido */
+  .panel{
+    max-width:480px;
+    margin:0 auto;
+    background:var(--panel);
+    border-radius:28px 28px 0 0;
+    padding:28px 22px 24px;
+    box-shadow: 0 -10px 30px rgba(38, 18, 78, .14);
+    transform: translateY(0);
+  }
 
-    .lock {
-      font-size: 120px;
-      color: #ba68c8; /* morado claro */
-    }
+  h1{
+    font-size:28px;
+    line-height:1.15;
+    margin:0 0 18px;
+    text-wrap:balance;
+  }
 
-    .warning {
-      position: absolute;
-      right: 20%;
-      top: 10%;
-      font-size: 40px;
-      color: #ffeb3b;
-    }
+  .row{
+    display:flex;gap:12px;align-items:flex-start;
+    color:var(--muted);
+    font-size:16px;line-height:1.35;
+    margin:10px 0;
+  }
+  .row svg{flex:0 0 22px;height:22px}
 
-    .content {
-      background: #fff;
-      border-radius: 30px 30px 0 0;
-      padding: 30px 20px;
-      text-align: left;
-    }
+  .cta{
+    margin-top:24px;
+    width:100%;
+    border:0;
+    background:var(--accent);
+    color:#fff;
+    font-weight:700;
+    letter-spacing:.3px;
+    padding:15px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+  }
+  .cta:active{transform:translateY(1px)}
 
-    .content h2 {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 20px;
-      text-align: center;
-    }
+  /* --- Dibujo: ladrón, candado y triángulo --- */
+  .thief{
+    position:absolute;left:-8px;top:10px;width:190px; height:190px;
+    overflow:visible;
+  }
+  .lock{
+    position:absolute;left:200px;top:10px;width:170px;height:200px;
+  }
+  .warn{
+    position:absolute;right:16px;top:28px;width:72px;height:72px;
+  }
 
-    .info {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 15px;
-    }
-
-    .info i {
-      font-size: 22px;
-      color: #6a1b9a;
-      margin-right: 10px;
-    }
-
-    .btn {
-      display: block;
-      width: 100%;
-      background: #00bfa5; /* verde agua */
-      color: white;
-      border: none;
-      padding: 15px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    .btn:hover {
-      background: #009688;
-    }
-  </style>
-  <!-- Importamos íconos de FontAwesome -->
-  <script src="https://kit.fontawesome.com/5a8e0b6c2d.js" crossorigin="anonymous"></script>
+  /* Responsive pequeñito */
+  @media (max-width:380px){
+    .hero{height:220px}
+    .lock{left:180px;transform:scale(.92)}
+    .warn{right:10px;transform:scale(.9)}
+    h1{font-size:24px}
+  }
+</style>
 </head>
 <body>
 
-  <div class="container">
-    <!-- Flecha atrás -->
-    <div class="back"><i class="fas fa-arrow-left"></i></div>
-
-    <!-- Candado + Advertencia -->
-    <div class="icon-box">
-      <i class="fas fa-lock-open lock"></i>
-      <i class="fas fa-exclamation-triangle warning"></i>
-    </div>
-
-    <!-- Contenido -->
-    <div class="content">
-      <h2>Si tu clave es muy fácil, otros podrían adivinarla</h2>
-
-      <div class="info">
-        <i class="fas fa-shield-alt"></i>
-        <p>Una clave segura protege tu Yape ante un robo.</p>
-      </div>
-
-      <div class="info">
-        <i class="fas fa-lock"></i>
-        <p>Cambia tu clave, yapero.<br>¡Tu seguridad es lo primero!</p>
-      </div>
-
-      <button class="btn">CREAR NUEVA CLAVE</button>
+  <div class="topbar">
+    <div class="back" aria-label="Volver">
+      <!-- Flecha atrás -->
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
     </div>
   </div>
 
+  <div class="hero">
+    <!-- LADRÓN asomándose desde la izquierda -->
+    <svg class="thief" viewBox="0 0 220 220" aria-hidden="true">
+      <!-- brazo -->
+      <ellipse cx="30" cy="150" rx="38" ry="38" fill="#2d1b4e"/>
+      <!-- cuerpo semicírculo -->
+      <path d="M0,160 a90,90 0 0 0 180,0 v-40 h-180z" fill="#2d1b4e" opacity=".9"/>
+      <!-- mano -->
+      <circle cx="38" cy="152" r="16" fill="#ffd6b4"/>
+      <!-- cabeza -->
+      <circle cx="70" cy="80" r="48" fill="#ffd6b4"/>
+      <!-- gorro -->
+      <path d="M22,72 q48-40 96,0 v-18 q-48-28-96,0z" fill="#1a1040"/>
+      <rect x="22" y="58" width="118" height="20" rx="10" fill="#2b1a56"/>
+      <!-- máscara -->
+      <rect x="32" y="78" width="96" height="28" rx="14" fill="#0f0a28"/>
+      <!-- ojos -->
+      <circle cx="60" cy="92" r="7" fill="#fff"/>
+      <circle cx="100" cy="92" r="7" fill="#fff"/>
+      <circle cx="60" cy="92" r="3" fill="#1a1a1a"/>
+      <circle cx="100" cy="92" r="3" fill="#1a1a1a"/>
+      <!-- sonrisa -->
+      <path d="M62,112 q18,10 36,0" stroke="#c97d5e" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <!-- borde para contraste -->
+      <circle cx="70" cy="80" r="48" fill="none" stroke="rgba(0,0,0,.12)" stroke-width="2"/>
+    </svg>
+
+    <!-- CANDADO grande -->
+    <svg class="lock" viewBox="0 0 200 240" aria-hidden="true">
+      <!-- arco -->
+      <path d="M60,70 a40,40 0 0 1 80,0 v40 h-20 v-40 a20,20 0 0 0 -40,0 v40 h-20z" fill="#cfa7ff"/>
+      <!-- cuerpo -->
+      <rect x="35" y="100" width="130" height="120" rx="18" fill="#b579e6"/>
+      <rect x="52" y="120" width="96" height="84" rx="14" fill="#dcb8ff"/>
+      <!-- orificio -->
+      <circle cx="100" cy="162" r="10" fill="#7a4cab"/>
+      <rect x="94" y="162" width="12" height="26" rx="6" fill="#7a4cab"/>
+    </svg>
+
+    <!-- TRIÁNGULO de advertencia -->
+    <svg class="warn" viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M10 90h80L50 10z" fill="var(--warning)"/>
+      <rect x="46" y="38" width="8" height="34" rx="3" fill="#3a2c00"/>
+      <circle cx="50" cy="78" r="5" fill="#3a2c00"/>
+    </svg>
+  </div>
+
+  <section class="panel" role="region" aria-label="Mensaje de seguridad">
+    <h1>Si tu clave es muy fácil, otros podrían adivinarla</h1>
+
+    <div class="row">
+      <!-- escudo -->
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#6c2aa7" d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3zM12 20c-3.3-1.3-6-4.9-6-9.1V6.6l6-2.2 6 2.2v4.3C18 15.1 15.3 18.7 12 20z"/></svg>
+      <p>Una clave segura protege tu Yape ante un robo.</p>
+    </div>
+
+    <div class="row">
+      <!-- candado pequeño -->
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#6c2aa7" d="M17 9h-1V7a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2Zm-6 0V7a2 2 0 0 1 4 0v2h-4Z"/></svg>
+      <p>Cambia tu clave, yapero.<br>¡Tu seguridad es lo primero!</p>
+    </div>
+
+    <button class="cta">CREAR NUEVA CLAVE</button>
+  </section>
+
 </body>
-</html>
+        </html>
