@@ -102,7 +102,7 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container" id="login-container">
     <h2><i class="fa-solid fa-user-lock"></i> Iniciar Sesión</h2>
     <input type="email" id="correo" placeholder="Correo electrónico" required>
     <input type="password" id="clave" placeholder="Contraseña" required>
@@ -120,18 +120,36 @@
     // Configuración de Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCHzOEwhFHQo9boQjRLLu18XJNFKXQU06A",
-    authDomain: "yape-5f8d6.firebaseapp.com",
-    projectId: "yape-5f8d6",
-    storageBucket: "yape-5f8d6.firebasestorage.app",
-    messagingSenderId: "609053449523",
-    appId: "1:609053449523:web:80a334f896f2fba834b246",
-    measurementId: "G-TNYNH4G14G"
-  };
+      authDomain: "yape-5f8d6.firebaseapp.com",
+      projectId: "yape-5f8d6",
+      storageBucket: "yape-5f8d6.firebasestorage.app",
+      messagingSenderId: "609053449523",
+      appId: "1:609053449523:web:80a334f896f2fba834b246",
+      measurementId: "G-TNYNH4G14G"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
+    // Verificar si el usuario ya está logueado
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          const doc = await db.collection("usuarios").doc(user.uid).get();
+          if (doc.exists) {
+            const usuario = doc.data();
+            localStorage.setItem("nombreUsuario", usuario.nombre);
+            localStorage.setItem("saldoUsuario", usuario.monto);
+            window.location.href = "inicio"; // Redirigir directamente
+          }
+        } catch (e) {
+          console.error("Error cargando usuario:", e);
+        }
+      }
+    });
+
+    // Función para iniciar sesión
     async function iniciarSesion() {
       const correo = document.getElementById('correo').value;
       const clave = document.getElementById('clave').value;
