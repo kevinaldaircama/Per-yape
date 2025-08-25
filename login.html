@@ -1,42 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
-  
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  
-  <!-- Iconos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/> 
-  
-  <!-- Manifest -->
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#720e9e" />
-  <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png"> 
-  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <title>Login</title>  
+    
+  <!-- Firebase -->  
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>  
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>  
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>  
+    
+  <!-- Iconos -->  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>   
+    
+  <!-- Manifest -->  
+  <link rel="manifest" href="manifest.json" />  
+  <meta name="theme-color" content="#720e9e" />  
+  <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png">   
+    
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #7B1FA2, #9C27B0);
-      padding: 20px;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+      background: linear-gradient(135deg, #6a11cb, #2575fc);  
+      margin: 0;  
+      height: 100vh;  
+      display: flex;  
+      justify-content: center;  
+      align-items: center;  
     }
 
     .container {
       max-width: 400px;
       width: 100%;
       background: #fff;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       animation: fadeIn 0.8s ease-in-out;
     }
 
@@ -47,49 +46,64 @@
 
     h2 {
       text-align: center;
-      color: #6a0dad;
-      margin-bottom: 20px;
+      color: #6a11cb;
+      margin-bottom: 25px;
+      font-size: 24px;
     }
 
-    input {
+    .input-group {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .input-group input {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 8px;
+      padding: 12px 40px 12px 15px;
+      border-radius: 10px;
       border: 1px solid #ccc;
+      font-size: 15px;
       transition: border 0.3s;
     }
 
-    input:focus {
-      border-color: #6a0dad;
+    .input-group input:focus {
+      border-color: #6a11cb;
       outline: none;
+      box-shadow: 0 0 5px rgba(106,17,203,0.3);
+    }
+
+    .input-group i {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
     }
 
     button {
       width: 100%;
-      padding: 12px;
-      background-color: #6a0dad;
+      padding: 14px;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
       color: #fff;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       font-weight: bold;
+      font-size: 16px;
       margin-top: 10px;
-      transition: background 0.3s, transform 0.2s;
+      transition: transform 0.2s;
     }
 
     button:hover {
-      background-color: #5a0099;
       transform: scale(1.03);
+      opacity: 0.95;
     }
 
     .secondary-btn {
-      background-color: #2EC4B6;
-      margin-top: 15px;
+      background: #2EC4B6;
     }
 
     .secondary-btn:hover {
-      background-color: #28a99b;
+      background: #28a99b;
     }
 
     .message {
@@ -102,78 +116,77 @@
   </style>
 </head>
 <body>
-  <div class="container" id="login-container">
+  <div class="container">
     <h2><i class="fa-solid fa-user-lock"></i> Iniciar Sesión</h2>
-    <input type="email" id="correo" placeholder="Correo electrónico" required>
-    <input type="password" id="clave" placeholder="Contraseña" required>
-    <button onclick="iniciarSesion()">Ingresar</button>
-    
-    <!-- Botón para solicitar cuenta -->
-    <button class="secondary-btn" onclick="window.location.href='planes'">
-      <i class="fa-solid fa-user-plus"></i> Solicitar Cuenta
-    </button>
+
+    <div class="input-group">
+      <input type="email" id="correo" placeholder="Correo electrónico" required>
+      <i class="fa-solid fa-envelope"></i>
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="clave" placeholder="Contraseña" required>
+      <i class="fa-solid fa-lock"></i>
+    </div>
+
+    <button onclick="iniciarSesion()"><i class="fa-solid fa-sign-in-alt"></i> Ingresar</button>
+      
+    <!-- Botón para solicitar cuenta -->  
+    <button class="secondary-btn" onclick="window.location.href='planes'">  
+      <i class="fa-solid fa-user-plus"></i> Solicitar Cuenta  
+    </button>  
 
     <div class="message" id="mensaje"></div>
   </div>
 
   <script>
     // Configuración de Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyCHzOEwhFHQo9boQjRLLu18XJNFKXQU06A",
-      authDomain: "yape-5f8d6.firebaseapp.com",
-      projectId: "yape-5f8d6",
-      storageBucket: "yape-5f8d6.firebasestorage.app",
-      messagingSenderId: "609053449523",
-      appId: "1:609053449523:web:80a334f896f2fba834b246",
-      measurementId: "G-TNYNH4G14G"
-    };
+    const firebaseConfig = {  
+      apiKey: "AIzaSyCHzOEwhFHQo9boQjRLLu18XJNFKXQU06A",  
+      authDomain: "yape-5f8d6.firebaseapp.com",  
+      projectId: "yape-5f8d6",  
+      storageBucket: "yape-5f8d6.firebasestorage.app",  
+      messagingSenderId: "609053449523",  
+      appId: "1:609053449523:web:80a334f896f2fba834b246",  
+      measurementId: "G-TNYNH4G14G"  
+    };  
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    firebase.initializeApp(firebaseConfig);  
+    const auth = firebase.auth();  
+    const db = firebase.firestore();  
 
-    // Verificar si el usuario ya está logueado
-    auth.onAuthStateChanged(async (user) => {
+    // 🔑 Detectar si ya hay sesión iniciada
+    auth.onAuthStateChanged(user => {
       if (user) {
-        try {
-          const doc = await db.collection("usuarios").doc(user.uid).get();
-          if (doc.exists) {
-            const usuario = doc.data();
-            localStorage.setItem("nombreUsuario", usuario.nombre);
-            localStorage.setItem("saldoUsuario", usuario.monto);
-            window.location.href = "inicio"; // Redirigir directamente
-          }
-        } catch (e) {
-          console.error("Error cargando usuario:", e);
-        }
+        // Si ya está logueado, redirigir directo
+        window.location.href = "inicio";
       }
     });
 
-    // Función para iniciar sesión
-    async function iniciarSesion() {
-      const correo = document.getElementById('correo').value;
-      const clave = document.getElementById('clave').value;
-      const mensaje = document.getElementById('mensaje');
+    async function iniciarSesion() {  
+      const correo = document.getElementById('correo').value;  
+      const clave = document.getElementById('clave').value;  
+      const mensaje = document.getElementById('mensaje');  
 
-      mensaje.innerText = "🔄 Verificando...";
+      mensaje.innerText = "🔄 Verificando...";  
 
-      try {
-        const credenciales = await auth.signInWithEmailAndPassword(correo, clave);
-        const uid = credenciales.user.uid;
-        const doc = await db.collection("usuarios").doc(uid).get();
+      try {  
+        const credenciales = await auth.signInWithEmailAndPassword(correo, clave);  
+        const uid = credenciales.user.uid;  
+        const doc = await db.collection("usuarios").doc(uid).get();  
 
-        if (doc.exists) {
-          const usuario = doc.data();
-          localStorage.setItem("nombreUsuario", usuario.nombre);
-          localStorage.setItem("saldoUsuario", usuario.monto);
-          window.location.href = "inicio.html";
-        } else {
-          mensaje.innerText = "⚠️ Usuario no encontrado. Solicite una cuenta.";
-        }
-      } catch (error) {
-        mensaje.innerText = `❌ Error: ${error.message}`;
-      }
-    }
+        if (doc.exists) {  
+          const usuario = doc.data();  
+          localStorage.setItem("nombreUsuario", usuario.nombre);  
+          localStorage.setItem("saldoUsuario", usuario.monto);  
+          window.location.href = "inicio.html";  
+        } else {  
+          mensaje.innerText = "⚠️ Usuario no encontrado. Solicite una cuenta.";  
+        }  
+      } catch (error) {  
+        mensaje.innerText = `❌ Error: ${error.message}`;  
+      }  
+    }  
   </script>
 </body>
 </html>
