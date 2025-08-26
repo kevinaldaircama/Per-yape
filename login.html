@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
   <title>Login</title>  
     
   <!-- Firebase -->  
@@ -13,11 +13,6 @@
   <!-- Iconos -->  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>   
     
-  <!-- Manifest -->  
-  <link rel="manifest" href="manifest.json" />  
-  <meta name="theme-color" content="#720e9e" />  
-  <link rel="icon" type="image/png" href="imagen/app_icon_xxxhdpi.png">   
-    
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
@@ -27,75 +22,74 @@
       display: flex;  
       justify-content: center;  
       align-items: center;  
+      padding: 15px;
     }
 
     .container {
-      max-width: 400px;
       width: 100%;
+      max-width: 360px; /* 📱 limitado para móvil */
       background: #fff;
-      padding: 35px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      animation: fadeIn 0.8s ease-in-out;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+      animation: fadeIn 0.6s ease-in-out;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     h2 {
       text-align: center;
       color: #6a11cb;
-      margin-bottom: 25px;
-      font-size: 24px;
+      margin-bottom: 20px;
+      font-size: 20px;
     }
 
     .input-group {
       position: relative;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
 
     .input-group input {
       width: 100%;
-      padding: 12px 40px 12px 15px;
+      padding: 12px 40px 12px 12px;
       border-radius: 10px;
       border: 1px solid #ccc;
-      font-size: 15px;
-      transition: border 0.3s;
+      font-size: 14px;
     }
 
     .input-group input:focus {
       border-color: #6a11cb;
       outline: none;
-      box-shadow: 0 0 5px rgba(106,17,203,0.3);
+      box-shadow: 0 0 4px rgba(106,17,203,0.25);
     }
 
     .input-group i {
       position: absolute;
-      right: 12px;
+      right: 10px;
       top: 50%;
       transform: translateY(-50%);
       color: #999;
+      font-size: 14px;
     }
 
     button {
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       background: linear-gradient(135deg, #6a11cb, #2575fc);
       color: #fff;
       border: none;
       border-radius: 10px;
       cursor: pointer;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 15px;
       margin-top: 10px;
-      transition: transform 0.2s;
     }
 
     button:hover {
-      transform: scale(1.03);
-      opacity: 0.95;
+      opacity: 0.9;
     }
 
     .secondary-btn {
@@ -108,10 +102,28 @@
 
     .message {
       text-align: center;
-      margin-top: 15px;
-      font-size: 14px;
+      margin-top: 12px;
+      font-size: 13px;
       color: #333;
-      min-height: 20px;
+      min-height: 18px;
+    }
+
+    /* 📱 Ajustes especiales solo móviles */
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+      .container {
+        padding: 20px;
+        border-radius: 12px;
+      }
+      h2 {
+        font-size: 18px;
+      }
+      button {
+        font-size: 14px;
+        padding: 11px;
+      }
     }
   </style>
 </head>
@@ -130,8 +142,6 @@
     </div>
 
     <button onclick="iniciarSesion()"><i class="fa-solid fa-sign-in-alt"></i> Ingresar</button>
-      
-    <!-- Botón para solicitar cuenta -->  
     <button class="secondary-btn" onclick="window.location.href='planes'">  
       <i class="fa-solid fa-user-plus"></i> Solicitar Cuenta  
     </button>  
@@ -140,7 +150,6 @@
   </div>
 
   <script>
-    // Configuración de Firebase
     const firebaseConfig = {  
       apiKey: "AIzaSyCHzOEwhFHQo9boQjRLLu18XJNFKXQU06A",  
       authDomain: "yape-5f8d6.firebaseapp.com",  
@@ -155,11 +164,10 @@
     const auth = firebase.auth();  
     const db = firebase.firestore();  
 
-    // 🔑 Detectar si ya hay sesión iniciada
+    // 🔑 Redirigir si ya hay sesión
     auth.onAuthStateChanged(user => {
       if (user) {
-        // Si ya está logueado, redirigir directo
-        window.location.href = "inicio";
+        window.location.href = "inicio.html";
       }
     });
 
