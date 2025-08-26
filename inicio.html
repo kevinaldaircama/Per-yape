@@ -263,7 +263,7 @@
             localStorage.setItem("saldoUsuario", datos.monto);
             window.location.href = "home.html";
           } else {
-            modalContent.innerHTML = "❌ PIN incorrecto";
+            modalContent.innerHTML = "su clave es incorrecta,después de 3 intentos incorrectos el acceso se bloqueará,en caso no recordar tu clave cámbialo";
             setTimeout(() => {
               modal.style.display = "none";
               input.value = "";
